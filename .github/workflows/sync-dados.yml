@@ -1,1 +1,45 @@
+name: Sync Excel Data
 
+on:
+  schedule:
+    - cron: '0 11 * * *'   # todo dia às 8h horário de Brasília (11h UTC)
+  workflow_dispatch:         # permite rodar manualmente pelo GitHub quando quiser
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repositório
+        uses: actions/checkout@v4
+
+      - name: Baixar Excel do Google Sheets
+        run: |
+          FILE_ID="1PeSi0A7m8YfUsoSkovA5iS79SkQAIip9"
+          curl -L \
+            "https://docs.google.com/spreadsheets/d/${FILE_ID}/export?format=xlsx" \
+            -o dados.xlsx
+          echo "Tamanho do arquivo: $(du -sh dados.xlsx)"
+
+      - name: Verificar se o arquivo é válido
+        run: |
+          if [ ! -s dados.xlsx ]; then
+            echo "Arquivo vazio ou não encontrado. Abortando."
+            exit 1
+          fi
+          echo "Arquivo OK."
+
+      - name: Commit e push se houver mudança
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add dados.xlsx
+          if git diff --staged --quiet; then
+            echo "Sem mudanças. Nenhum commit necessário."
+          else
+            git commit -m "auto: atualiza dados $(date +'%d/%m/%Y %H:%M') UTC"
+            git push
+            echo "Dados atualizados com sucesso."
+          fi
