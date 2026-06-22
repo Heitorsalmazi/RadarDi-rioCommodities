@@ -2,7 +2,7 @@ name: Sync Excel Data
 
 on:
   schedule:
-    - cron: '0 11 * * *'   # todo dia às 8h horário de Brasília (11h UTC)
+    - cron: '0 */2 * * *'  # a cada 2 horas
   workflow_dispatch:         # permite rodar manualmente pelo GitHub quando quiser
 
 jobs:
