@@ -1,0 +1,77 @@
+name: Atualiza matriz logística
+
+# Cadeia SEPARADA da de preços. `sync-dados.yml` roda a cada 2 horas e é
+# crítico: se ele falhar, o Radar fica sem cotação. Este aqui mexe em outro
+# arquivo, num ritmo muito mais lento, e uma falha dele não pode respingar
+# naquele. Por isso são dois workflows e não um.
+#
+# Rotas rodoviárias praticamente não mudam. Mensal é suficiente, e é também
+# um limite de educação com o Nominatim e o OSRM, que são públicos e
+# gratuitos.
+
+on:
+  schedule:
+    - cron: '17 4 1 * *'   # dia 1 de cada mês, 04:17 UTC
+  workflow_dispatch:
+
+# Duas execuções simultâneas deste workflow disputariam o mesmo arquivo.
+concurrency:
+  group: logistica-reposicao
+  cancel-in-progress: false
+
+jobs:
+  logistica:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # Ordem importa: a matriz resolve as coordenadas de origem pela base
+      # municipal. Base primeiro, matriz depois.
+      - name: Atualizar base de municípios
+        run: python3 scripts/update_municipios.py
+
+      - name: Atualizar matriz
+        run: python3 scripts/update_logistica_reposicao.py
+
+      - name: Commit e push com rebase
+        run: |
+          set -e
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # SÓ este arquivo. `git add -A` poderia arrastar um dados.xlsx
+          # baixado pelo outro workflow no mesmo instante.
+          git add data/logistica_reposicao.json data/municipios_brasil.json
+
+          if git diff --staged --quiet; then
+            echo "Matriz e base municipal sem mudanças. Nada a commitar."
+            exit 0
+          fi
+
+          git commit -m "auto: logística da reposição $(date -u +'%d/%m/%Y') UTC"
+
+          # `sync-dados.yml` roda a cada 2 horas e também dá push. Se ele
+          # commitar entre o nosso fetch e o nosso push, o push é rejeitado
+          # por non-fast-forward. Rebase e três tentativas resolvem sem
+          # nunca sobrescrever o trabalho dele.
+          for tentativa in 1 2 3; do
+            if git push; then
+              echo "Push concluído na tentativa $tentativa."
+              exit 0
+            fi
+            echo "Push rejeitado. Rebase e nova tentativa ($tentativa/3)."
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            sleep 5
+          done
+
+          echo "Não consegui publicar depois de 3 tentativas."
+          exit 1

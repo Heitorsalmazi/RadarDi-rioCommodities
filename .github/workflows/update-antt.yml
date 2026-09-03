@@ -1,0 +1,71 @@
+name: Atualiza coeficientes da ANTT
+
+# Terceira cadeia independente. As três não se conhecem:
+#   sync-dados.yml       preços de mercado, a cada 2 horas, crítico
+#   update-logistica.yml rotas e municípios, mensal
+#   update-antt.yml      coeficientes do piso mínimo, diário
+#
+# Se a ANTT sair do ar, as rotas continuam. Se o OSRM cair, a ANTT continua.
+# Se qualquer um dos dois falhar, os preços continuam chegando.
+#
+# Verificação diária NÃO significa commit diário: o script compara antes de
+# gravar e sai sem mexer em nada quando a tabela é a mesma.
+
+on:
+  schedule:
+    - cron: '40 7 * * *'   # todo dia, 07:40 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: antt-coeficientes
+  cancel-in-progress: false
+
+jobs:
+  antt:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Verificar ANTT
+        id: antt
+        run: python3 scripts/update_antt.py
+        continue-on-error: true    # fonte fora do ar não derruba o repositório
+
+      - name: Commit e push com rebase
+        if: steps.antt.outcome == 'success'
+        run: |
+          set -e
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Só o arquivo desta cadeia. Nunca `git add -A`: o workflow de
+          # preços pode ter baixado um dados.xlsx no mesmo minuto.
+          git add data/logistica_reposicao.json
+
+          if git diff --staged --quiet; then
+            echo "Coeficientes sem alteração. Nenhum commit."
+            exit 0
+          fi
+
+          git commit -m "auto: coeficientes ANTT $(date -u +'%d/%m/%Y') UTC"
+
+          for tentativa in 1 2 3; do
+            if git push; then
+              echo "Push concluído na tentativa $tentativa."
+              exit 0
+            fi
+            echo "Push rejeitado. Rebase e nova tentativa ($tentativa/3)."
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            sleep 5
+          done
+          echo "Não consegui publicar depois de 3 tentativas."
+          exit 1
