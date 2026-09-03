@@ -175,18 +175,13 @@ def main():
 
     antes = json.dumps(doc, ensure_ascii=False, sort_keys=True)
 
-    destino = doc.get("destino") or {}
-    if destino.get("nome") and not coord_valida(destino):
-        diga(f"Destino sem coordenada: geocodificando '{destino['nome']}'")
-        c = geocodificar(destino["nome"])
-        if c:
-            destino["latitude"], destino["longitude"] = c
-            diga(f"  destino: {c[0]:.5f}, {c[1]:.5f}")
-
-    if not coord_valida(destino):
-        diga("Sem destino fixo — é o estado normal desde que o destino passou a ser")
-        diga("escolhido na tela. Atualizo as coordenadas de origem e paro aí; a rota")
-        diga("é calculada no navegador, contra o município que o operador escolher.")
+    # NÃO EXISTE MAIS DESTINO NO ARQUIVO. Ele é escolhido na tela; aqui só
+    # cuidamos das origens. O bloco `destino` foi removido do JSON justamente
+    # para não sobrar um campo inerte que alguém volte a preencher por engano.
+    destino = {}
+    diga("Sem destino fixo, por desenho: o operador escolhe UF e município na tela")
+    diga("e a rota é calculada lá, sob demanda, com cache. Aqui só atualizo as")
+    diga("coordenadas de origem das praças.")
 
     idx_mun = carregar_base_municipal()
     if idx_mun:

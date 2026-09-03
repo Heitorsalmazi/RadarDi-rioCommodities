@@ -3,45 +3,71 @@
 """
 COEFICIENTES DA ANTT — DESCOBERTA E EXTRAÇÃO AUTOMÁTICAS
 ════════════════════════════════════════════════════════════════════════════
-Mantém, em `data/logistica_reposicao.json`, os coeficientes vigentes da
-Política Nacional de Pisos Mínimos do Transporte Rodoviário de Cargas:
+Mantém, em `data/logistica_reposicao.json`, os coeficientes vigentes do piso
+mínimo de frete:
 
     CCD  custo de deslocamento, R$ por quilômetro
     CC   custo de carga e descarga, R$ por operação
 
-para 3, 6 e 9 eixos, na Tabela A, operação de Carga Lotação, tipo de carga
-Carga Geral.
+para 3, 6 e 9 eixos, na TABELA A (Transporte Rodoviário de Carga Lotação),
+linha Carga Geral.
 
-POR QUE CARGA GERAL
+FONTE — E POR QUE ESTA
 ────────────────────────────────────────────────────────────────────────────
-A ANTT não publica coeficiente para "bovinos vivos". A tabela tem tipos como
-carga geral, granel sólido, frigorificada, perigosa. O transporte de boi em
-caminhão-boiadeiro não tem linha própria, e inventar uma seria pior que usar
-uma referência declarada. Carga Geral entra como BENCHMARK, e a interface diz
-isso na tela.
+A versão CONSOLIDADA da Resolução ANTT nº 5.867/2020 no ANTTLegis. É ela que
+carrega o ANEXO II com a tabela de coeficientes, e é ela que o próprio texto
+oficial aponta como o lugar atualizado pelas revisões:
+
+    "O Anexo II desta Resolução, que contém os coeficientes de pisos mínimos
+     de frete, é atualizado por meio das revisões ordinárias e
+     extraordinárias."
+
+A página institucional do gov.br sobre a Política de Pisos Mínimos NÃO serve:
+ela é texto explicativo e não contém nenhuma tabela de coeficientes. Uma
+versão anterior deste script apontava para lá e teria falhado para sempre,
+em silêncio.
+
+O documento consolidado já incorpora a redação vigente, venha ela de
+Resolução (revisão ordinária) ou de Portaria SUROC (revisão extraordinária,
+disparada quando o diesel S10 oscila mais de 5%). Por isso não é preciso
+caçar cada Portaria: basta ler o consolidado e registrar qual ato deu a
+redação atual.
+
+TRÊS ARMADILHAS REAIS DESTE DOCUMENTO
+────────────────────────────────────────────────────────────────────────────
+1. "TABELA A" aparece ANTES no corpo do texto ("obtidos na Tabela A do ANEXO
+   II"), muito longe da tabela. Pegar a primeira ocorrência e depois o
+   primeiro <table> devolveria a tabela errada. Só o TÍTULO conta, e o
+   título traz a descrição da operação junto.
+
+2. A linha 11 da tabela é "Perigosa (carga geral)". Casar "carga geral" por
+   substring pega essa linha e devolve números plausíveis e errados. A
+   comparação é do texto INTEIRO da célula.
+
+3. Perto do título da Tabela A há menção à Resolução 6.076/2026, que não é o
+   ato da Tabela A. O ato é lido na janela entre o título e a tabela, não no
+   documento inteiro.
 
 O QUE ESTE SCRIPT NÃO FAZ
 ────────────────────────────────────────────────────────────────────────────
-Não fixa o número da resolução. A ANTT altera os pisos por Resolução e também
-por atualização extraordinária, que pode vir em Portaria. Procurar apenas por
-"Resolução nº X" congelaria o Radar na tabela de 2026 sem ninguém perceber.
-O script descobre o ato vigente a cada execução.
-
-Não aceita tabela que não passe na validação. Se a ANTT mudar o HTML e o
-parser trouxer lixo, o JSON continua com o último conjunto oficialmente
-válido. Um coeficiente errado não deixa o frete "aproximado": deixa errado, e
-errado com aparência de certo é a pior combinação possível.
+Não grava nada parcialmente. Extrai os seis números e o ato para a memória,
+valida o conjunto, e só então escreve.
 
 Não transforma ausência em zero. CCD zero faria o frete virar só o CC, e a
 conta fecharia sem reclamar.
 
+Não carimba data no arquivo versionado quando nada mudou. Carimbar geraria
+um commit por dia — e um deploy por dia — para registrar que nada aconteceu.
+A data da consulta fica no log do Actions.
+
 USO
     python3 scripts/update_antt.py
-    python3 scripts/update_antt.py --fixture testes/fixtures/antt_exemplo.html
+    python3 scripts/update_antt.py --fixture testes/fixtures/antt_real_5867_consolidada.html
     python3 scripts/update_antt.py --dry-run
 """
 
 import argparse
+import html as _html
 import json
 import os
 import re
@@ -54,146 +80,219 @@ RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ARQ = os.path.join(RAIZ, "data", "logistica_reposicao.json")
 
 UA = "RadarDiarioCommodities/1.0 (github.com/Heitorsalmazi/RadarDi-rioCommodities)"
-TIMEOUT = 45
+TIMEOUT = 60
 
-# Páginas oficiais. Nenhum blog, nenhuma notícia, nenhuma tabela copiada.
-FONTES = [
-    "https://www.gov.br/antt/pt-br/assuntos/transporte-rodoviario-de-cargas/politica-nacional-de-pisos-minimos-do-transporte-rodoviario-de-cargas",
-    "https://www.gov.br/antt/pt-br/assuntos/transporte-rodoviario-de-cargas/piso-minimo",
+# Versão consolidada da Resolução 5.867/2020 no ANTTLegis.
+FONTE = ("https://anttlegis.antt.gov.br/action/ActionDatalegis.php"
+         "?acao=abrirTextoAto&tipo=RES&numeroAto=00005867&seqAto=000"
+         "&valorAno=2020&orgao=DG/ANTT/MI&codTipo=&desItem=&desItemFim="
+         "&cod_menu=5408&cod_modulo=161&pesquisa=true")
+
+EIXOS_ALVO = {"3e": 3, "6e": 6, "9e": 9}
+CAPACIDADE_CAB = {"3e": 25, "6e": 70, "9e": 110}   # parâmetro do projeto, não da ANTT
+
+TIPO_ATO = {"RES": "Resolução", "POR": "Portaria", "PRT": "Portaria"}
+
+# O documento precisa conter TODOS estes marcadores para ser lido.
+MARCADORES = [
+    "5.867",
+    "anexo ii",
+    "tabela a",
+    "carga geral",
+    "deslocamento (ccd)",
+    "carga e descarga (cc)",
 ]
 
-EIXOS = {"3e": 3, "6e": 6, "9e": 9}
 
-# Termos que precisam estar presentes para a página ser considerada a certa.
-# Sem isso, um parser posicional aceitaria qualquer tabela numérica.
-MARCADORES = ["tabela a", "carga geral", "ccd", "cc"]
-
-
+# ── Texto ────────────────────────────────────────────────────────────────
 def sem_acento(s):
     return "".join(c for c in unicodedata.normalize("NFD", s or "")
                    if unicodedata.category(c) != "Mn")
 
 
 def norm(s):
+    """Minúsculas, sem acento, espaços colapsados. Para COMPARAR, não para exibir."""
     return re.sub(r"\s+", " ", sem_acento(str(s or "")).lower()).strip()
 
 
-def baixar(url):
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "text/html"})
-    with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
-        return r.read().decode("utf-8", errors="replace")
+def texto_de(fragmento_html):
+    """Tira tags e resolve entidades. `&nbsp;` vira espaço comum."""
+    t = re.sub(r"<[^>]+>", " ", fragmento_html or "")
+    t = _html.unescape(t).replace("\xa0", " ")
+    return re.sub(r"\s+", " ", t).strip()
 
 
-def descobrir_ato(html):
-    """Identifica o ato normativo vigente citado na página.
+# ── Números brasileiros ──────────────────────────────────────────────────
+def num_br(txt):
+    """Converte número no formato brasileiro para float.
 
-    Aceita Resolução E Portaria: a atualização extraordinária dos coeficientes
-    já veio por Portaria mais de uma vez, e um script que só procura Resolução
-    perderia essas revisões em silêncio."""
-    t = norm(html)
-    achados = []
-    # O ano pode vir logo depois do número ("6.084/2026") ou separado por
-    # "de" e vírgulas ("nº 6.084, de 2026"). As duas grafias aparecem nas
-    # páginas da ANTT, e aceitar só a primeira perderia metade dos atos.
-    LIGA = r"(?:\s*[/,]?\s*(?:de\s+)?)"
-    padroes = [
-        (r"resolucao[^0-9]{0,40}(\d[\d\.]{2,8})" + LIGA + r"(20\d\d)", "Resolução"),
-        (r"portaria[^0-9]{0,60}(\d[\d\.]{1,8})" + LIGA + r"(20\d\d)", "Portaria"),
-    ]
-    for rx, tipo in padroes:
-        for m in re.finditer(rx, t):
-            numero = m.group(1).replace(".", "")
-            ano = int(m.group(2))
-            achados.append({"tipo": tipo, "numero": numero, "ano": ano})
-    if not achados:
-        return None
-    # O mais recente por ano, e entre os do mesmo ano o de maior número.
-    achados.sort(key=lambda a: (a["ano"], int(a["numero"])))
-    return achados[-1]
+        '5,0977'    → 5.0977
+        '541,86'    → 541.86
+        '1.016,33'  → 1016.33      ponto é separador de milhar
+        'R$/km'     → None
+        ''          → None
 
-
-def _num(txt):
-    """Converte '3,4567' e '3.4567' para float. Devolve None se não for número."""
-    s = re.sub(r"[^\d,\.\-]", "", str(txt or ""))
+    Devolve None para qualquer coisa que não seja um número limpo. Aceitar
+    lixo aqui é o caminho mais curto para um coeficiente errado."""
+    s = (txt or "").strip()
     if not s:
         return None
-    if "," in s and "." in s:
-        s = s.replace(".", "").replace(",", ".")     # 1.234,56
-    else:
-        s = s.replace(",", ".")
+    # Só dígitos, ponto, vírgula e sinal. Um "R$" ou "km" colado é descartado.
+    s = re.sub(r"[^\d,\.\-]", "", s)
+    if not s or not re.search(r"\d", s):
+        return None
+    if "," in s:
+        # Vírgula é o decimal; ponto, se houver, é milhar.
+        s = s.replace(".", "").replace(",", ".")
+    elif s.count(".") > 1:
+        # 1.016.330 — só milhares, sem decimal.
+        s = s.replace(".", "")
     try:
         v = float(s)
     except ValueError:
         return None
-    return v if v == v and abs(v) != float("inf") else None
+    if v != v or v in (float("inf"), float("-inf")):
+        return None
+    return v
 
 
-def extrair_tabela(html):
-    """Procura, nas tabelas da página, a linha de Carga Geral e os coeficientes
-    por número de eixos.
+# ── Tabela ───────────────────────────────────────────────────────────────
+def linhas_da_tabela(tabela_html):
+    """Matriz de textos, com colspan expandido.
 
-    A busca é SEMÂNTICA, não posicional: encontra a célula pelo texto do
-    cabeçalho e da linha. Um parser que confiasse em "linha 12, coluna 4"
-    quebraria em silêncio no dia em que a ANTT mexesse no layout, e devolveria
-    números plausíveis vindos do lugar errado."""
-    tabelas = re.findall(r"<table\b.*?</table>", html, re.S | re.I)
-    for tab in tabelas:
-        tnorm = norm(re.sub(r"<[^>]+>", " ", tab))
-        if "carga geral" not in tnorm:
-            continue
-        # CCD e CC costumam ser explicados na LEGENDA, fora da tabela. Exigir
-        # os dois dentro dela reprovava a tabela certa. A checagem dos
-        # marcadores continua, só que sobre a página inteira, em `main`.
-        if not re.search(r"\d+\s*eixo", tnorm):
-            continue
-
-        linhas = re.findall(r"<tr\b.*?</tr>", tab, re.S | re.I)
-        matriz = []
-        for tr in linhas:
-            celulas = re.findall(r"<t[hd]\b[^>]*>(.*?)</t[hd]>", tr, re.S | re.I)
-            matriz.append([re.sub(r"<[^>]+>", " ", c).strip() for c in celulas])
-        if not matriz:
-            continue
-
-        cabecalho = None
-        for row in matriz[:5]:
-            if any("eixo" in norm(c) for c in row):
-                cabecalho = row
-                break
-        if not cabecalho:
-            continue
-
-        # Coluna de cada configuração de eixos.
-        col_de = {}
-        for i, c in enumerate(cabecalho):
-            m = re.search(r"(\d+)\s*eixo", norm(c))
-            if m:
-                col_de[int(m.group(1))] = i
-
-        linha_geral = None
-        for row in matriz:
-            if any("carga geral" in norm(c) for c in row):
-                linha_geral = row
-                break
-        if linha_geral is None:
-            continue
-
-        out = {}
-        for chave, n in EIXOS.items():
-            i = col_de.get(n)
-            if i is None or i >= len(linha_geral):
-                continue
-            # A célula pode trazer CCD e CC juntos, separados por barra ou traço.
-            nums = [_num(x) for x in re.split(r"[/|\-–—]| e ", linha_geral[i]) if _num(x) is not None]
-            if len(nums) >= 2:
-                out[chave] = {"ccd": nums[0], "cc": nums[1]}
-        if len(out) == 3:
-            return out
-    return None
+    Sem expandir colspan, o cabeçalho mesclado ('Número de eixos carregados',
+    colspan=7) desloca todas as colunas seguintes e o mapa coluna→eixo sai
+    errado por um número plausível de casas."""
+    matriz = []
+    for tr in re.findall(r"<tr\b.*?</tr>", tabela_html, re.S | re.I):
+        linha = []
+        for m in re.finditer(r"<t[hd]\b([^>]*)>(.*?)</t[hd]>", tr, re.S | re.I):
+            attrs, conteudo = m.group(1), m.group(2)
+            cs = re.search(r'colspan\s*=\s*["\']?(\d+)', attrs, re.I)
+            n = int(cs.group(1)) if cs else 1
+            texto = texto_de(conteudo)
+            linha.extend([texto] * max(1, n))
+        if linha:
+            matriz.append(linha)
+    return matriz
 
 
-def validar(coefs):
-    """Todos os seis números precisam existir, ser finitos e ser positivos."""
+def mapa_de_eixos(matriz):
+    """{numero_de_eixos: indice_da_coluna}, lido do cabeçalho REAL.
+
+    Nada de 'a coluna de 6 eixos é a sexta'. A ANTT publica 2,3,4,5,6,7,9 —
+    note que 8 não existe —, e uma mudança futura nessa lista tem de ser
+    seguida, não adivinhada."""
+    for linha in matriz[:6]:
+        mapa = {}
+        for i, celula in enumerate(linha):
+            t = celula.strip()
+            if re.fullmatch(r"\d{1,2}", t):
+                mapa[int(t)] = i
+        if len(mapa) >= 5:
+            return mapa
+    return {}
+
+
+def achar_tabela_a(html):
+    """Devolve (html_da_tabela, janela_do_titulo) ou (None, None).
+
+    O título é 'TABELA A' SEGUIDO da descrição da operação. A menção solta a
+    'Tabela A' no corpo do texto não casa com isso."""
+    plano = sem_acento(html).upper()
+    m = re.search(r"TABELA\s+A\s*[-–—]\s*TRANSPORTE\s+RODOVIARIO\s+DE\s+CARGA\s+LOTACAO", plano)
+    if not m:
+        return None, None
+    i = m.start()
+    ini = html.lower().find("<table", i)
+    if ini < 0:
+        return None, None
+    fim = html.lower().find("</table>", ini)
+    if fim < 0:
+        return None, None
+    return html[ini:fim + 8], html[i:ini]
+
+
+def achar_ato(janela):
+    """Ato que deu a redação vigente à Tabela A.
+
+    Lido SÓ na janela entre o título e a tabela. O documento inteiro cita
+    dezenas de atos, incluindo um logo acima que não tem relação com esta
+    tabela."""
+    ato = {"tipo": None, "numero": None, "ano": None, "data": None}
+
+    # Forma estruturada: LinkTexto('RES','00006084','000','2026',...)
+    m = re.search(r"LinkTexto\(\s*'([A-Z]{3})'\s*,\s*'0*(\d+)'\s*,\s*'\d+'\s*,\s*'(20\d\d)'",
+                  janela)
+    if m:
+        ato["tipo"] = TIPO_ATO.get(m.group(1), m.group(1))
+        ato["numero"] = m.group(2)
+        ato["ano"] = int(m.group(3))
+
+    # Forma textual, que traz a data por extenso.
+    t = texto_de(janela)
+    m2 = re.search(
+        r"(RESOLU\w*|PORTARIA)[^0-9]{0,60}?(\d[\d\.]{1,8})\s*,?\s*DE\s+(\d{1,2})\s+DE\s+"
+        r"(JANEIRO|FEVEREIRO|MAR\w O|MAR\w?O|ABRIL|MAIO|JUNHO|JULHO|AGOSTO|SETEMBRO|OUTUBRO|NOVEMBRO|DEZEMBRO)"
+        r"\s+DE\s+(20\d\d)", t, re.I)
+    if m2:
+        MES = {"janeiro": 1, "fevereiro": 2, "marco": 3, "março": 3, "abril": 4,
+               "maio": 5, "junho": 6, "julho": 7, "agosto": 8, "setembro": 9,
+               "outubro": 10, "novembro": 11, "dezembro": 12}
+        mes = MES.get(norm(m2.group(4)))
+        if mes:
+            ato["data"] = f"{int(m2.group(5)):04d}-{mes:02d}-{int(m2.group(3)):02d}"
+        if not ato["numero"]:
+            ato["numero"] = m2.group(2).replace(".", "")
+            ato["ano"] = int(m2.group(5))
+            ato["tipo"] = "Resolução" if norm(m2.group(1)).startswith("resolu") else "Portaria"
+    return ato if ato["numero"] else None
+
+
+def extrair(html):
+    """Devolve (coeficientes, ato, diagnostico). Não grava nada."""
+    tabela, janela = achar_tabela_a(html)
+    if not tabela:
+        return None, None, "título da TABELA A não localizado"
+
+    matriz = linhas_da_tabela(tabela)
+    if not matriz:
+        return None, None, "TABELA A sem linhas"
+
+    col = mapa_de_eixos(matriz)
+    faltam = [n for n in EIXOS_ALVO.values() if n not in col]
+    if faltam:
+        return None, None, f"cabeçalho sem as colunas de eixos {faltam}"
+
+    # IGUALDADE, NÃO CONTINÊNCIA. "Perigosa (carga geral)" é outra linha.
+    i_ccd = None
+    for i, linha in enumerate(matriz):
+        if any(norm(c) == "carga geral" for c in linha) and \
+           any("deslocamento" in norm(c) for c in linha):
+            i_ccd = i
+            break
+    if i_ccd is None:
+        return None, None, "linha 'Carga Geral / Deslocamento (CCD)' não localizada"
+
+    if i_ccd + 1 >= len(matriz):
+        return None, None, "linha de Carga e descarga (CC) não existe após o CCD"
+    linha_cc = matriz[i_ccd + 1]
+    if not any("carga e descarga" in norm(c) for c in linha_cc):
+        return None, None, "linha seguinte ao CCD não é 'Carga e descarga (CC)'"
+
+    linha_ccd = matriz[i_ccd]
+    coefs = {}
+    for chave, eixos in EIXOS_ALVO.items():
+        i = col[eixos]
+        ccd = num_br(linha_ccd[i]) if i < len(linha_ccd) else None
+        cc = num_br(linha_cc[i]) if i < len(linha_cc) else None
+        coefs[chave] = {"ccd": ccd, "cc": cc}
+
+    return coefs, achar_ato(janela or ""), "ok"
+
+
+def validar(coefs, ato):
+    """Tudo ou nada. Um único item ausente reprova o conjunto inteiro."""
     if not coefs or len(coefs) != 3:
         return False, "faltam configurações de eixos"
     for k in ("3e", "6e", "9e"):
@@ -203,22 +302,32 @@ def validar(coefs):
             if v is None:
                 return False, f"{k}.{campo} ausente"
             if not isinstance(v, (int, float)) or v != v:
-                return False, f"{k}.{campo} não é número"
+                return False, f"{k}.{campo} não é número finito"
             if v <= 0:
                 return False, f"{k}.{campo} = {v}, deveria ser positivo"
-    # O CCD de 9 eixos é maior que o de 3: caminhão maior custa mais por km.
-    if coefs["9e"]["ccd"] <= coefs["3e"]["ccd"]:
-        return False, "CCD de 9 eixos não é maior que o de 3 — tabela suspeita"
+    # Caminhão maior custa mais por km. Se inverter, a tabela foi lida errado.
+    if not (coefs["3e"]["ccd"] < coefs["6e"]["ccd"] < coefs["9e"]["ccd"]):
+        return False, "CCD não cresce de 3 para 6 para 9 eixos — leitura suspeita"
+    if not (coefs["3e"]["cc"] < coefs["9e"]["cc"]):
+        return False, "CC de 9 eixos não é maior que o de 3 — leitura suspeita"
+    if not ato or not ato.get("numero"):
+        return False, "ato que deu a redação vigente não identificado"
     return True, "ok"
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--fixture", default=None, help="HTML local, para teste")
+    ap.add_argument("--fixture", default=None, help="HTML local, para teste offline")
     ap.add_argument("--dry-run", action="store_true", help="não grava o JSON")
+    # Quando se lê uma cópia verbatim do documento oficial (por exemplo, salva
+    # de um ambiente com rede), a procedência real não pode virar `null`: o
+    # dado veio daquela URL, e o JSON tem de dizer isso.
+    ap.add_argument("--fonte-url", default=None,
+                    help="registra esta URL como procedência ao usar --fixture")
     args = ap.parse_args()
 
-    print("ANTT — verificando...")
+    agora = datetime.now(timezone.utc)
+    print(f"ANTT — verificação em {agora.strftime('%Y-%m-%d %H:%M:%SZ')}")
 
     if not os.path.exists(ARQ):
         print(f"ERRO: {ARQ} não existe.")
@@ -226,111 +335,117 @@ def main():
     with open(ARQ, encoding="utf-8") as f:
         doc = json.load(f)
     antt = doc.setdefault("antt", {})
-    ato_atual = (antt.get("ato") or {})
-    print(f"Ato armazenado: {ato_atual.get('tipo')} {ato_atual.get('numero')}/{ato_atual.get('ano')}")
+    veic = antt.setdefault("veiculos", {})
+    ato_guardado = antt.get("ato") or {}
+    print(f"Ato armazenado: {ato_guardado.get('tipo')} {ato_guardado.get('numero')}/{ato_guardado.get('ano')}")
 
-    html, origem = None, None
     if args.fixture:
         with open(args.fixture, encoding="utf-8") as f:
             html = f.read()
-        origem = "fixture: " + args.fixture
+        origem = "fixture: " + os.path.basename(args.fixture)
+        print(f"Fonte: {origem}")
     else:
-        for url in FONTES:
-            try:
-                html = baixar(url); origem = url
-                print(f"Fonte: {url}")
-                break
-            except Exception as e:
-                print(f"    falhou: {url} — {e}")
-    if not html:
-        print("Nenhuma fonte oficial respondeu. Coeficientes anteriores preservados.")
-        return 1
+        print(f"Fonte: {FONTE}")
+        try:
+            req = urllib.request.Request(FONTE, headers={"User-Agent": UA, "Accept": "text/html"})
+            with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+                status = getattr(r, "status", 200)
+                html = r.read().decode("utf-8", errors="replace")
+            print(f"HTTP {status} · {len(html)} bytes")
+        except Exception as e:
+            print(f"FALHA ao baixar: {e}")
+            print("Coeficientes anteriores preservados. Nada foi gravado.")
+            return 1
+        origem = FONTE
 
     tn = norm(html)
+    if "nao esta disponivel" in tn:
+        print("ANTTLegis respondeu 'ato não disponível no momento'.")
+        print("Coeficientes anteriores preservados. Nada foi gravado.")
+        return 1
     faltando = [m for m in MARCADORES if m not in tn]
     if faltando:
-        print(f"Página sem os marcadores esperados: {faltando}")
+        print(f"Documento sem os marcadores esperados: {faltando}")
         print("O layout pode ter mudado. Coeficientes anteriores preservados.")
         return 1
 
-    ato = descobrir_ato(html)
-    print(f"Ato encontrado: {ato}")
-
-    coefs = extrair_tabela(html)
+    coefs, ato, diag = extrair(html)
     if not coefs:
-        print("Não localizei a linha de Carga Geral na Tabela A.")
-        print("Coeficientes anteriores preservados.")
+        print(f"Extração falhou: {diag}")
+        print("Coeficientes anteriores preservados. Nada foi gravado.")
         return 1
 
-    ok, motivo = validar(coefs)
-    print("Tabela: A · Referência: Carga Geral")
+    print("Tabela A · Carga Geral")
     for k in ("3e", "6e", "9e"):
-        c = coefs.get(k, {})
-        print(f"  {k}: CCD {c.get('ccd')}  CC {c.get('cc')}")
+        print(f"  {EIXOS_ALVO[k]} eixos: CCD {coefs[k]['ccd']}  CC {coefs[k]['cc']}")
+    print(f"Ato vigente da Tabela A: {ato}")
+
+    ok, motivo = validar(coefs, ato)
     if not ok:
         print(f"VALIDAÇÃO REPROVOU: {motivo}")
-        print("Coeficientes anteriores preservados.")
+        print("Coeficientes anteriores preservados. Nada foi gravado.")
         return 1
 
-    veic = antt.setdefault("veiculos", {})
-    mudou = False
-    for k, n in EIXOS.items():
-        v = veic.setdefault(k, {"eixos": n, "capacidadeCab": {"3e":25,"6e":70,"9e":110}[k]})
-        if v.get("ccd") != coefs[k]["ccd"] or v.get("cc") != coefs[k]["cc"]:
-            mudou = True
+    # ── O que conta como mudança ─────────────────────────────────────────
+    mudou_coef = any(
+        (veic.get(k) or {}).get("ccd") != coefs[k]["ccd"] or
+        (veic.get(k) or {}).get("cc") != coefs[k]["cc"]
+        for k in EIXOS_ALVO
+    )
+    mudou_ato = (
+        str(ato_guardado.get("numero")) != str(ato.get("numero")) or
+        ato_guardado.get("ano") != ato.get("ano") or
+        ato_guardado.get("tipo") != ato.get("tipo")
+    )
 
-    agora = datetime.now(timezone.utc)
-    antt["ultimaVerificacao"] = agora.strftime("%Y-%m-%dT%H:%M:%SZ")
-
-    # ATO MAIS RECENTE NÃO É, POR SI, NOVA REFERÊNCIA. A ANTT publica muita
-    # coisa; uma Portaria pode tratar de outro assunto e apenas citar a
-    # tabela vigente. Se os seis coeficientes são idênticos aos que já estão
-    # guardados, nada mudou de fato — trocar o número do ato ali daria a
-    # impressão de atualização que não houve.
-    if not mudou:
-        print("Status: SEM ALTERAÇÃO — coeficientes idênticos aos vigentes")
-        if ato and ato_atual.get("numero") != ato.get("numero"):
-            print(f"    (ato citado na página é {ato['tipo']} {ato['numero']}/{ato['ano']}, "
-                  f"mas não alterou a tabela: referência mantida)")
-        if not args.dry_run:
-            with open(ARQ, "w", encoding="utf-8") as f:
-                json.dump(doc, f, ensure_ascii=False, indent=2); f.write("\n")
+    if not (mudou_coef or mudou_ato):
+        # SEM ESCRITA. Gravar só para carimbar a data geraria um commit por
+        # dia e um deploy por dia dizendo que nada aconteceu.
+        print("Status: SEM ALTERAÇÃO — coeficientes e ato idênticos aos vigentes")
+        print("Arquivo não modificado. Nenhum commit será necessário.")
         return 0
 
-    for k, n in EIXOS.items():
-        veic[k]["eixos"] = n
-        veic[k]["ccd"] = coefs[k]["ccd"]
-        veic[k]["cc"] = coefs[k]["cc"]
+    for k, n in EIXOS_ALVO.items():
+        v = veic.setdefault(k, {})
+        v["eixos"] = n
+        v["capacidadeCab"] = v.get("capacidadeCab", CAPACIDADE_CAB[k])
+        v["ccd"] = coefs[k]["ccd"]
+        v["cc"] = coefs[k]["cc"]
 
     antt["tabela"] = "A"
     antt["operacao"] = "Transporte Rodoviário de Carga Lotação"
     antt["tipoCargaReferencia"] = "Carga Geral"
     antt["ato"] = {
-        "tipo": (ato or {}).get("tipo"),
-        "numero": (ato or {}).get("numero"),
-        "ano": (ato or {}).get("ano"),
-        "dataPublicacao": None,
-        "inicioVigencia": None,
-        "url": origem if not args.fixture else None,
+        "tipo": ato.get("tipo"),
+        "numero": ato.get("numero"),
+        "ano": ato.get("ano"),
+        "data": ato.get("data"),
+        "consolidadoEm": "Resolução ANTT nº 5.867/2020, Anexo II",
+        "url": (args.fonte_url or None) if args.fixture else origem,
     }
     antt["ultimaAtualizacao"] = agora.strftime("%Y-%m-%dT%H:%M:%SZ")
+    antt.pop("ultimaVerificacao", None)   # a data da consulta vive no log
 
     hist = doc.setdefault("historicoAntt", [])
     entrada = {
-        "ato": f"{(ato or {}).get('tipo')} {(ato or {}).get('numero')}/{(ato or {}).get('ano')}",
+        "ato": f"{ato.get('tipo')} {ato.get('numero')}/{ato.get('ano')}",
+        "data": ato.get("data"),
         "registradoEm": agora.strftime("%Y-%m-%d"),
         "3e": coefs["3e"], "6e": coefs["6e"], "9e": coefs["9e"],
     }
-    # Só entra no histórico o que for de fato diferente do último registro.
-    if not hist or {k: hist[-1].get(k) for k in ("3e","6e","9e")} != {k: entrada[k] for k in ("3e","6e","9e")}:
+    ultimo = hist[-1] if hist else None
+    igual_ao_ultimo = bool(ultimo) and all(
+        ultimo.get(k) == entrada[k] for k in ("ato", "3e", "6e", "9e"))
+    if not igual_ao_ultimo:
         hist.append(entrada)
 
-    print("Status: NOVA TABELA DETECTADA")
+    print("Status: NOVA TABELA" if mudou_coef else "Status: MESMOS COEFICIENTES, ATO NOVO")
     if args.dry_run:
         print("(dry-run: JSON não gravado)")
         return 0
     with open(ARQ, "w", encoding="utf-8") as f:
-        json.dump(doc, f, ensure_ascii=False, indent=2); f.write("\n")
+        json.dump(doc, f, ensure_ascii=False, indent=2)
+        f.write("\n")
     print("JSON ATUALIZADO")
     return 0
 
