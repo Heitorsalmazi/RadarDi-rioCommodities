@@ -1,45 +1,39 @@
 {
   "schemaVersion": 1,
-  "_leiaMe": "Matriz logística da reposição. Preenchida por scripts/update_logistica_reposicao.py via Nominatim (geocodificação) e OSRM (distância rodoviária), ambos gratuitos. AUSÊNCIA DE DADO É null, NUNCA ZERO — zero produziria decisão econômica errada. As chaves das rotas são idênticas às de _rgPracas('Boi Magro') no Radar, no formato UF/Praça. Atenção: 'SP/Bauru/Marília' contém duas barras; separe apenas na PRIMEIRA.",
+  "_leiaMe": "Matriz logística da reposição. O DESTINO NÃO MORA AQUI: é escolhido na tela (UF + município + código IBGE) e a rota é calculada sob demanda no navegador, com cache. Este arquivo guarda a origem de cada praça e os coeficientes da ANTT.",
   "ultimaAtualizacao": null,
-  "destino": {
-    "nome": null,
-    "latitude": null,
-    "longitude": null
-  },
   "antt": {
     "tabela": "A",
     "operacao": "Transporte Rodoviário de Carga Lotação",
     "tipoCargaReferencia": "Carga Geral",
     "_leiaMe": "CCD em R$/km e CC em R$ por operação. Preenchidos automaticamente por scripts/update_antt.py a partir da página oficial da ANTT. A ANTT não publica coeficiente para bovinos vivos; Carga Geral entra como referência declarada.",
     "ato": {
-      "tipo": null,
-      "numero": null,
-      "ano": null,
-      "dataPublicacao": null,
-      "inicioVigencia": null,
-      "url": null
+      "tipo": "Resolução",
+      "numero": "6084",
+      "ano": 2026,
+      "data": "2026-07-16",
+      "consolidadoEm": "Resolução ANTT nº 5.867/2020, Anexo II",
+      "url": "https://anttlegis.antt.gov.br/action/ActionDatalegis.php?acao=abrirTextoAto&tipo=RES&numeroAto=00005867&seqAto=000&valorAno=2020&orgao=DG/ANTT/MI&codTipo=&desItem=&desItemFim=&cod_menu=5408&cod_modulo=161&pesquisa=true"
     },
-    "ultimaVerificacao": null,
-    "ultimaAtualizacao": null,
+    "ultimaAtualizacao": "2026-09-03T15:50:13Z",
     "veiculos": {
       "3e": {
         "eixos": 3,
         "capacidadeCab": 25,
-        "ccd": null,
-        "cc": null
+        "ccd": 5.0977,
+        "cc": 541.86
       },
       "6e": {
         "eixos": 6,
         "capacidadeCab": 70,
-        "ccd": null,
-        "cc": null
+        "ccd": 7.3547,
+        "cc": 671.93
       },
       "9e": {
         "eixos": 9,
         "capacidadeCab": 110,
-        "ccd": null,
-        "cc": null
+        "ccd": 9.2027,
+        "cc": 903.32
       }
     }
   },
@@ -546,5 +540,23 @@
       "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
     }
   },
-  "historicoAntt": []
+  "historicoAntt": [
+    {
+      "ato": "Resolução 6084/2026",
+      "data": "2026-07-16",
+      "registradoEm": "2026-09-03",
+      "3e": {
+        "ccd": 5.0977,
+        "cc": 541.86
+      },
+      "6e": {
+        "ccd": 7.3547,
+        "cc": 671.93
+      },
+      "9e": {
+        "ccd": 9.2027,
+        "cc": 903.32
+      }
+    }
+  ]
 }
