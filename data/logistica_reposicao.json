@@ -1,1 +1,550 @@
-
+{
+  "schemaVersion": 1,
+  "_leiaMe": "Matriz logística da reposição. Preenchida por scripts/update_logistica_reposicao.py via Nominatim (geocodificação) e OSRM (distância rodoviária), ambos gratuitos. AUSÊNCIA DE DADO É null, NUNCA ZERO — zero produziria decisão econômica errada. As chaves das rotas são idênticas às de _rgPracas('Boi Magro') no Radar, no formato UF/Praça. Atenção: 'SP/Bauru/Marília' contém duas barras; separe apenas na PRIMEIRA.",
+  "ultimaAtualizacao": null,
+  "destino": {
+    "nome": null,
+    "latitude": null,
+    "longitude": null
+  },
+  "antt": {
+    "tabela": "A",
+    "operacao": "Transporte Rodoviário de Carga Lotação",
+    "tipoCargaReferencia": "Carga Geral",
+    "_leiaMe": "CCD em R$/km e CC em R$ por operação. Preenchidos automaticamente por scripts/update_antt.py a partir da página oficial da ANTT. A ANTT não publica coeficiente para bovinos vivos; Carga Geral entra como referência declarada.",
+    "ato": {
+      "tipo": null,
+      "numero": null,
+      "ano": null,
+      "dataPublicacao": null,
+      "inicioVigencia": null,
+      "url": null
+    },
+    "ultimaVerificacao": null,
+    "ultimaAtualizacao": null,
+    "veiculos": {
+      "3e": {
+        "eixos": 3,
+        "capacidadeCab": 25,
+        "ccd": null,
+        "cc": null
+      },
+      "6e": {
+        "eixos": 6,
+        "capacidadeCab": 70,
+        "ccd": null,
+        "cc": null
+      },
+      "9e": {
+        "eixos": 9,
+        "capacidadeCab": 110,
+        "ccd": null,
+        "cc": null
+      }
+    }
+  },
+  "rotas": {
+    "BA/Centro Sul Baiano": {
+      "uf": "BA",
+      "praca": "Centro Sul Baiano",
+      "tipoOrigem": "regiao",
+      "origemRota": null,
+      "distanciaKm": null,
+      "pedagios": null,
+      "fonteRota": null,
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+    },
+    "BA/Oeste da Bahia": {
+      "uf": "BA",
+      "praca": "Oeste da Bahia",
+      "tipoOrigem": "regiao",
+      "origemRota": null,
+      "distanciaKm": null,
+      "pedagios": null,
+      "fonteRota": null,
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+    },
+    "GO/Goiânia": {
+      "uf": "GO",
+      "praca": "Goiânia",
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Goiânia, Goiás, Brasil",
+        "latitude": -16.6864,
+        "longitude": -49.2643,
+        "codigoIbge": 5208707,
+        "uf": "GO",
+        "municipio": "Goiânia"
+      },
+      "distanciaKm": null,
+      "pedagios": {
+        "3e": null,
+        "6e": null,
+        "9e": null
+      },
+      "fonteRota": "coordenada municipal IBGE (base local)",
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": null
+    },
+    "GO/Norte de Goiás": {
+      "uf": "GO",
+      "praca": "Norte de Goiás",
+      "tipoOrigem": "regiao",
+      "origemRota": null,
+      "distanciaKm": null,
+      "pedagios": null,
+      "fonteRota": null,
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+    },
+    "GO/Rio Verde": {
+      "uf": "GO",
+      "praca": "Rio Verde",
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Rio Verde, Goiás, Brasil",
+        "latitude": -17.7923,
+        "longitude": -50.9192,
+        "codigoIbge": 5218805,
+        "uf": "GO",
+        "municipio": "Rio Verde"
+      },
+      "distanciaKm": null,
+      "pedagios": {
+        "3e": null,
+        "6e": null,
+        "9e": null
+      },
+      "fonteRota": "coordenada municipal IBGE (base local)",
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": null
+    },
+    "MG/Norte de Minas": {
+      "uf": "MG",
+      "praca": "Norte de Minas",
+      "tipoOrigem": "regiao",
+      "origemRota": null,
+      "distanciaKm": null,
+      "pedagios": null,
+      "fonteRota": null,
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+    },
+    "MG/Triângulo Mineiro": {
+      "uf": "MG",
+      "praca": "Triângulo Mineiro",
+      "tipoOrigem": "regiao",
+      "origemRota": null,
+      "distanciaKm": null,
+      "pedagios": null,
+      "fonteRota": null,
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+    },
+    "MS/Campo Grande": {
+      "uf": "MS",
+      "praca": "Campo Grande",
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Campo Grande, Mato Grosso do Sul, Brasil",
+        "latitude": -20.4486,
+        "longitude": -54.6295,
+        "codigoIbge": 5002704,
+        "uf": "MS",
+        "municipio": "Campo Grande"
+      },
+      "distanciaKm": null,
+      "pedagios": {
+        "3e": null,
+        "6e": null,
+        "9e": null
+      },
+      "fonteRota": "coordenada municipal IBGE (base local)",
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": null
+    },
+    "MS/Cassilândia": {
+      "uf": "MS",
+      "praca": "Cassilândia",
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Cassilândia, Mato Grosso do Sul, Brasil",
+        "latitude": -19.1179,
+        "longitude": -51.7313,
+        "codigoIbge": 5002902,
+        "uf": "MS",
+        "municipio": "Cassilândia"
+      },
+      "distanciaKm": null,
+      "pedagios": {
+        "3e": null,
+        "6e": null,
+        "9e": null
+      },
+      "fonteRota": "coordenada municipal IBGE (base local)",
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": null
+    },
+    "MS/Dourados": {
+      "uf": "MS",
+      "praca": "Dourados",
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Dourados, Mato Grosso do Sul, Brasil",
+        "latitude": -22.2231,
+        "longitude": -54.812,
+        "codigoIbge": 5003702,
+        "uf": "MS",
+        "municipio": "Dourados"
+      },
+      "distanciaKm": null,
+      "pedagios": {
+        "3e": null,
+        "6e": null,
+        "9e": null
+      },
+      "fonteRota": "coordenada municipal IBGE (base local)",
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": null
+    },
+    "MS/Pantanal": {
+      "uf": "MS",
+      "praca": "Pantanal",
+      "tipoOrigem": "regiao",
+      "origemRota": null,
+      "distanciaKm": null,
+      "pedagios": null,
+      "fonteRota": null,
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+    },
+    "MS/Três Lagoas": {
+      "uf": "MS",
+      "praca": "Três Lagoas",
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Três Lagoas, Mato Grosso do Sul, Brasil",
+        "latitude": -20.7849,
+        "longitude": -51.7007,
+        "codigoIbge": 5008305,
+        "uf": "MS",
+        "municipio": "Três Lagoas"
+      },
+      "distanciaKm": null,
+      "pedagios": {
+        "3e": null,
+        "6e": null,
+        "9e": null
+      },
+      "fonteRota": "coordenada municipal IBGE (base local)",
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": null
+    },
+    "MT/Barra do Garças": {
+      "uf": "MT",
+      "praca": "Barra do Garças",
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Barra do Garças, Mato Grosso, Brasil",
+        "latitude": -15.8804,
+        "longitude": -52.264,
+        "codigoIbge": 5101803,
+        "uf": "MT",
+        "municipio": "Barra do Garças"
+      },
+      "distanciaKm": null,
+      "pedagios": {
+        "3e": null,
+        "6e": null,
+        "9e": null
+      },
+      "fonteRota": "coordenada municipal IBGE (base local)",
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": null
+    },
+    "MT/Colider": {
+      "uf": "MT",
+      "praca": "Colider",
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Colíder, Mato Grosso, Brasil",
+        "latitude": -10.8135,
+        "longitude": -55.461,
+        "codigoIbge": 5103205,
+        "uf": "MT",
+        "municipio": "Colíder"
+      },
+      "distanciaKm": null,
+      "pedagios": {
+        "3e": null,
+        "6e": null,
+        "9e": null
+      },
+      "fonteRota": "coordenada municipal IBGE (base local)",
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": null
+    },
+    "MT/Cuiabá": {
+      "uf": "MT",
+      "praca": "Cuiabá",
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Cuiabá, Mato Grosso, Brasil",
+        "latitude": -15.601,
+        "longitude": -56.0974,
+        "codigoIbge": 5103403,
+        "uf": "MT",
+        "municipio": "Cuiabá"
+      },
+      "distanciaKm": null,
+      "pedagios": {
+        "3e": null,
+        "6e": null,
+        "9e": null
+      },
+      "fonteRota": "coordenada municipal IBGE (base local)",
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": null
+    },
+    "MT/Cáceres": {
+      "uf": "MT",
+      "praca": "Cáceres",
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Cáceres, Mato Grosso, Brasil",
+        "latitude": -16.0764,
+        "longitude": -57.6818,
+        "codigoIbge": 5102504,
+        "uf": "MT",
+        "municipio": "Cáceres"
+      },
+      "distanciaKm": null,
+      "pedagios": {
+        "3e": null,
+        "6e": null,
+        "9e": null
+      },
+      "fonteRota": "coordenada municipal IBGE (base local)",
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": null
+    },
+    "MT/Rondonópolis": {
+      "uf": "MT",
+      "praca": "Rondonópolis",
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Rondonópolis, Mato Grosso, Brasil",
+        "latitude": -16.4673,
+        "longitude": -54.6372,
+        "codigoIbge": 5107602,
+        "uf": "MT",
+        "municipio": "Rondonópolis"
+      },
+      "distanciaKm": null,
+      "pedagios": {
+        "3e": null,
+        "6e": null,
+        "9e": null
+      },
+      "fonteRota": "coordenada municipal IBGE (base local)",
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": null
+    },
+    "MT/Sorriso": {
+      "uf": "MT",
+      "praca": "Sorriso",
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Sorriso, Mato Grosso, Brasil",
+        "latitude": -12.5425,
+        "longitude": -55.7211,
+        "codigoIbge": 5107925,
+        "uf": "MT",
+        "municipio": "Sorriso"
+      },
+      "distanciaKm": null,
+      "pedagios": {
+        "3e": null,
+        "6e": null,
+        "9e": null
+      },
+      "fonteRota": "coordenada municipal IBGE (base local)",
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": null
+    },
+    "PA/Pará": {
+      "uf": "PA",
+      "praca": "Pará",
+      "tipoOrigem": "regiao",
+      "origemRota": null,
+      "distanciaKm": null,
+      "pedagios": null,
+      "fonteRota": null,
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+    },
+    "PR/Noroeste do Paraná": {
+      "uf": "PR",
+      "praca": "Noroeste do Paraná",
+      "tipoOrigem": "regiao",
+      "origemRota": null,
+      "distanciaKm": null,
+      "pedagios": null,
+      "fonteRota": null,
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+    },
+    "RO/Rondônia": {
+      "uf": "RO",
+      "praca": "Rondônia",
+      "tipoOrigem": "regiao",
+      "origemRota": null,
+      "distanciaKm": null,
+      "pedagios": null,
+      "fonteRota": null,
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+    },
+    "RS/Rio Grande do Sul": {
+      "uf": "RS",
+      "praca": "Rio Grande do Sul",
+      "tipoOrigem": "regiao",
+      "origemRota": null,
+      "distanciaKm": null,
+      "pedagios": null,
+      "fonteRota": null,
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+    },
+    "SP/Araçatuba": {
+      "uf": "SP",
+      "praca": "Araçatuba",
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Araçatuba, São Paulo, Brasil",
+        "latitude": -21.2076,
+        "longitude": -50.4401,
+        "codigoIbge": 3502804,
+        "uf": "SP",
+        "municipio": "Araçatuba"
+      },
+      "distanciaKm": null,
+      "pedagios": {
+        "3e": null,
+        "6e": null,
+        "9e": null
+      },
+      "fonteRota": "coordenada municipal IBGE (base local)",
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": null
+    },
+    "SP/Bauru/Marília": {
+      "uf": "SP",
+      "praca": "Bauru/Marília",
+      "tipoOrigem": "regiao",
+      "origemRota": null,
+      "distanciaKm": null,
+      "pedagios": null,
+      "fonteRota": null,
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+    },
+    "SP/Presidente Prudente": {
+      "uf": "SP",
+      "praca": "Presidente Prudente",
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Presidente Prudente, São Paulo, Brasil",
+        "latitude": -22.1207,
+        "longitude": -51.3925,
+        "codigoIbge": 3541406,
+        "uf": "SP",
+        "municipio": "Presidente Prudente"
+      },
+      "distanciaKm": null,
+      "pedagios": {
+        "3e": null,
+        "6e": null,
+        "9e": null
+      },
+      "fonteRota": "coordenada municipal IBGE (base local)",
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": null
+    },
+    "SP/São José do Rio Preto": {
+      "uf": "SP",
+      "praca": "São José do Rio Preto",
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "São José do Rio Preto, São Paulo, Brasil",
+        "latitude": -20.8113,
+        "longitude": -49.3758,
+        "codigoIbge": 3549805,
+        "uf": "SP",
+        "municipio": "São José do Rio Preto"
+      },
+      "distanciaKm": null,
+      "pedagios": {
+        "3e": null,
+        "6e": null,
+        "9e": null
+      },
+      "fonteRota": "coordenada municipal IBGE (base local)",
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": null
+    },
+    "SP/Vale do Paraíba": {
+      "uf": "SP",
+      "praca": "Vale do Paraíba",
+      "tipoOrigem": "regiao",
+      "origemRota": null,
+      "distanciaKm": null,
+      "pedagios": null,
+      "fonteRota": null,
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+    },
+    "TO/Tocantins": {
+      "uf": "TO",
+      "praca": "Tocantins",
+      "tipoOrigem": "regiao",
+      "origemRota": null,
+      "distanciaKm": null,
+      "pedagios": null,
+      "fonteRota": null,
+      "fontesPedagio": [],
+      "atualizacao": null,
+      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+    }
+  },
+  "historicoAntt": []
+}
