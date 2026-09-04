@@ -1,0 +1,85 @@
+name: Atualiza base de pedágios
+
+# Quarta cadeia independente. Nenhuma conhece a outra:
+#   sync-dados.yml        preços, a cada 2 horas, crítico
+#   update-logistica.yml  rotas e municípios, mensal
+#   update-antt.yml       coeficientes do piso mínimo, diário
+#   update-pedagios.yml   praças e tarifas de pedágio, diário
+#
+# Verificação diária NÃO é commit diário: o build compara antes de gravar e
+# sai sem tocar em nada quando a base é a mesma.
+#
+# Custo: R$ 0. Só fontes públicas — CKAN da ANTT, CKAN da ARTESP e os
+# documentos oficiais que essas páginas apontam. Nenhum secret, nenhuma API
+# paga, nenhuma chave.
+
+on:
+  schedule:
+    - cron: '25 6 * * *'   # todo dia, 06:25 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: pedagios
+  cancel-in-progress: false
+
+jobs:
+  pedagios:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # pdfplumber melhora muito a leitura do PDF da ARTESP, mas o provider
+      # funciona sem ele (cai para extração via zlib da stdlib). Por isso o
+      # passo não derruba o job se a instalação falhar.
+      - name: Dependência opcional de PDF
+        run: pip install --quiet pdfplumber || echo "sem pdfplumber; usando fallback da stdlib"
+        continue-on-error: true
+
+      - name: Montar base de pedágios
+        id: build
+        run: python3 scripts/build_pedagios.py
+        continue-on-error: true    # fonte fora do ar não derruba o repositório
+
+      - name: Sinalizar falha de fonte
+        if: steps.build.outcome != 'success'
+        run: |
+          echo "::warning::Um dos providers de pedágio falhou. A base anterior foi preservada."
+
+      - name: Commit e push com rebase
+        if: steps.build.outcome == 'success'
+        run: |
+          set -e
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # SÓ este arquivo. `git add -A` poderia arrastar um dados.xlsx que o
+          # workflow de preços baixou no mesmo minuto.
+          git add data/pedagios_brasil.json
+
+          if git diff --staged --quiet; then
+            echo "Base de pedágios sem mudanças. Nenhum commit."
+            exit 0
+          fi
+
+          git commit -m "auto: base de pedágios $(date -u +'%d/%m/%Y') UTC"
+
+          for tentativa in 1 2 3; do
+            if git push; then
+              echo "Push concluído na tentativa $tentativa."
+              exit 0
+            fi
+            echo "Push rejeitado. Rebase e nova tentativa ($tentativa/3)."
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            sleep 5
+          done
+          echo "Não consegui publicar depois de 3 tentativas."
+          exit 1
