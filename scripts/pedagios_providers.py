@@ -30,7 +30,13 @@ import zipfile
 from datetime import date
 
 UA = "RadarDiarioCommodities/1.0 (github.com/Heitorsalmazi/RadarDi-rioCommodities)"
-TIMEOUT = 90
+
+# 90 s por página era generoso demais: multiplicado pelas 36 concessionárias,
+# o pior caso passava de 50 min. Uma página do gov.br que não responde em 30 s
+# não vai responder — melhor falhar cedo e preservar a base do dia anterior.
+# O PDF da ARTESP (1,2 MB) tem folga própria, por ser um download só.
+TIMEOUT = 30
+TIMEOUT_DOWNLOAD = 120
 
 # ── ANTT ────────────────────────────────────────────────────────────────
 ANTT_CKAN = "https://dados.antt.gov.br/api/3/action/package_show?id=praca-de-pedagio"
@@ -46,9 +52,9 @@ ARTESP_ANCORA_ATUAL = "Valor Atual das Tarifas"
 ARTESP_ANCORA_HIST = "Histórico de Tarifas (Contratos Vigentes)"
 
 
-def _get(url, aceita="text/html"):
+def _get(url, aceita="text/html", timeout=None):
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": aceita})
-    with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+    with urllib.request.urlopen(req, timeout=timeout or TIMEOUT) as r:
         return r.read()
 
 
@@ -134,7 +140,7 @@ def antt_localizacoes(diag):
         raise RuntimeError("dataset ANTT sem recurso JSON")
     diag["antt_recurso"] = rec["id"]
     diag["antt_recurso_url"] = rec["url"]
-    bruto = json.loads(_get(rec["url"], "application/json").decode("utf-8"))
+    bruto = json.loads(_get(rec["url"], "application/json", TIMEOUT_DOWNLOAD).decode("utf-8"))
     linhas = bruto.get("praca-de-pedagio") or []
     out, vistos = [], set()
     for x in linhas:
@@ -283,8 +289,8 @@ def artesp_coletar(diag):
     diag["artesp_href_atual"] = href_atual
     diag["artesp_href_historico"] = href_hist
 
-    txt_hist = _pdf_texto(_get(href_hist, "application/pdf")) if href_hist else ""
-    txt_atual = _pdf_texto(_get(href_atual, "application/pdf")) if href_atual else ""
+    txt_hist = _pdf_texto(_get(href_hist, "application/pdf", TIMEOUT_DOWNLOAD)) if href_hist else ""
+    txt_atual = _pdf_texto(_get(href_atual, "application/pdf", TIMEOUT_DOWNLOAD)) if href_atual else ""
 
     def datas(t):
         return sorted({d for d in re.findall(r"\d{2}/\d{2}/\d{4}", t or "")},
