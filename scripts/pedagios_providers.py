@@ -172,58 +172,6 @@ def antt_localizacoes(diag):
     return out
 
 
-def antt_tarifas(concessionaria, diag):
-    """Tarifa 3e e 6e com RODAGEM DUPLA.
-
-    A tabela federal tem duas linhas de 3 eixos: categoria 3 (rodagem simples,
-    automóvel com semirreboque) e categoria 4 (rodagem dupla, caminhão). Casar
-    só por "3 eixos" pega a errada e erra ~50% para menos.
-
-    9 eixos: a tabela termina em 8 e não publica regra de eixo excedente.
-    Devolve None — derivar por linearidade aparente seria inventar."""
-    url = f"{ANTT_CONCESSOES}/{slug_concessionaria(concessionaria)}/tarifas-de-pedagio"
-    try:
-        html = _get(url).decode("utf-8", errors="replace")
-    except Exception as e:
-        diag.setdefault("antt_tarifa_falhou", []).append(f"{concessionaria}: {e}")
-        return None
-
-    tabs = re.findall(r"<table\b.*?</table>", html, re.S | re.I)
-    tab = next((t for t in tabs if "categoria de veiculo" in norm(_texto(t))), None)
-    if not tab:
-        diag.setdefault("antt_sem_tabela", []).append(concessionaria)
-        return None
-
-    linhas = _tabela(tab)
-    # Linha de nomes de praça: só existe quando a concessão tarifa por praça.
-    colunas = None
-    if len(linhas) > 1 and not re.fullmatch(r"\d+", (linhas[1][0] or "").strip()):
-        cand = [c for c in linhas[1] if c.strip()]
-        if cand and all(len(c) <= 12 for c in cand):
-            colunas = cand
-
-    def linha(eixos):
-        for r in linhas:
-            if len(r) > 4 and (r[2] or "").strip() == str(eixos) and "dupla" in norm(r[3]):
-                return r
-        return None
-
-    res = {"colunas": colunas, "3e": None, "6e": None, "9e": None,
-           "metodo": "categoria_rodagem_dupla", "url": url}
-    for k, n in (("3e", 3), ("6e", 6)):
-        r = linha(n)
-        if r:
-            vals = [num_br(v) for v in r[5:] if num_br(v) is not None]
-            res[k] = vals if colunas else (vals[0] if vals else None)
-    # Regra de eixo excedente: só se a página publicar explicitamente.
-    if re.search(r"eixo\s+excedente|eixo\s+adicional|acima\s+de\s+8\s+eixos", norm(html)):
-        diag.setdefault("antt_regra_excedente", []).append(concessionaria)
-    return res
-
-
-# ════════════════════════════════════════════════════════════════════════
-#  ARTESP
-# ════════════════════════════════════════════════════════════════════════
 def _artesp_href(html, texto_ancora):
     """Descobre o documento pelo TEXTO da âncora, nunca pelo UUID.
 
@@ -341,25 +289,3 @@ def artesp_coletar(diag):
     return pracas, vigencia
 
 
-def _artesp_vigencia(data_base, diag):
-    """Decide o status da tarifa paulista.
-
-    NÃO assume "reajuste todo 1º de julho". O que faz é comparar a data-base
-    publicada com hoje e, se houver distância suficiente para ter havido
-    revisão sem que o documento tenha mudado, marcar como não confirmada.
-    Marcar é diferente de apagar: o valor continua na base, rotulado."""
-    if not data_base:
-        return {"dataBase": None, "status": "indeterminado",
-                "motivo": "documento sem data-base legível"}
-    dd, mm, aa = (int(x) for x in data_base.split("/"))
-    base = date(aa, mm, dd)
-    hoje = date.today()
-    meses = (hoje.year - base.year) * 12 + (hoje.month - base.month)
-    diag["artesp_data_base"] = base.isoformat()
-    diag["artesp_meses_desde_base"] = meses
-    if meses <= 12:
-        return {"dataBase": base.isoformat(), "status": "vigente",
-                "motivo": f"data-base há {meses} meses, dentro do ciclo de revisão"}
-    return {"dataBase": base.isoformat(), "status": "desatualizado_nao_confirmado",
-            "motivo": (f"data-base há {meses} meses e nenhum documento mais recente foi "
-                       "publicado na página oficial; valor mantido como último oficial conhecido")}

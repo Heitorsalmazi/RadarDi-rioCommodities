@@ -14,9 +14,9 @@ REGRAS QUE ESTE SCRIPT NÃO QUEBRA
 2. NÃO GRAVA SE NADA MUDOU. Comparação ignora o carimbo de tempo; senão todo
    dia haveria commit para registrar que nada aconteceu.
 
-3. TARIFA VENCIDA NÃO VIRA NULA. Ela fica, com `vigencia.status` dizendo que
-   não foi confirmada. Apagar perderia a única referência disponível; fingir
-   que é vigente seria pior ainda.
+3. NÃO COLETA TARIFA. O custo virou praças × eixos × tarifa única, definida na
+   interface. Este script entrega apenas ONDE ficam as praças — que é o que
+   permite contá-las na rota.
 
 4. NÃO INVENTA COORDENADA. A praça paulista é localizada pela sede do
    município do nome — aproximação declarada em `fontes.localizacao`, que o
@@ -88,57 +88,14 @@ def geocodificar_sp(nome, indice):
 
 
 def enriquecer(pracas):
-    """Deriva os campos do schema 2 que a interface consome.
-
-    POR QUE ISTO EXISTE: a base v2 foi montada à mão na Fase 4 e o script
-    gravava v1. Cada execução do workflow apagava os campos que o motor de
-    status usa, e a interface passava a chamar de "sem tarifa" tudo o que na
-    verdade era ausência de campo. Derivar aqui fecha esse buraco: o script
-    volta a ser a única fonte do arquivo.
-
-    Nada aqui inventa tarifa. Só nomeia o que já está — ou não está — no dado.
-    """
+    """Único campo derivado que sobrou: se a praça tem coordenada para casar
+    com a geometria da rota. As 12 rampas do Rodoanel não têm — existem, mas
+    não podem ser contadas automaticamente."""
     for p in pracas:
-        t = p.get("tarifas") or {}
-        valores = [(t.get(k) or {}).get("valor") for k in ("3e", "6e", "9e")]
-        tem = any(v is not None for v in valores)
-
-        # TRÊS COISAS DIFERENTES, e cada uma tem consequência própria:
-        #   pracaConhecida — a praça consta da fonte oficial. Sempre verdadeira
-        #                    aqui: se não constasse, não estaria nesta lista.
-        #   posicionavel   — tem coordenada para casar com a geometria da rota.
-        #                    As 12 rampas do Rodoanel não têm, e nem por isso
-        #                    deixam de existir.
-        #   tarifaDisponivel — a concessionária publica valor.
-        # Colapsar as três num campo só foi o que fez a interface chamar de
-        # "sem tarifa" praça que era só sem coordenada.
-        p["pracaConhecida"] = True
         p["posicionavel"] = p.get("latitude") is not None and p.get("longitude") is not None
-        p["tarifaDisponivel"] = tem
-
-        if not tem:
-            if p.get("regulador") == "ANTT":
-                p["motivoSemTarifa"] = ("SEM_CATEGORIA_PUBLICADA"
-                                        if (p.get("fontes") or {}).get("tarifa")
-                                        else "SEM_FONTE_TARIFARIA")
-            else:
-                p["motivoSemTarifa"] = "SEM_FONTE_TARIFARIA"
-        else:
-            p["motivoSemTarifa"] = None
-
-        # Tarifa unitária por eixo: só a ARTESP publica essa regra. No federal
-        # a categoria é fechada, então NÃO se divide o valor de 6 eixos por 6.
-        if p.get("regulador") == "ARTESP":
-            v6 = (t.get("6e") or {}).get("valor")
-            p["tarifaPorEixo"] = round(v6 / 6, 6) if v6 else None
-        else:
-            p["tarifaPorEixo"] = None
-
         if p.get("sentido") in (None, ""):
             p["sentido"] = None
-            p.setdefault("fonteSentido", "SEM_FONTE_SENTIDO")
     return pracas
-
 
 def corredores(pracas):
     """`UF|RODOVIA` de toda rodovia onde existe praça comprovada.
@@ -161,83 +118,41 @@ def versao(pracas):
 
 
 def montar_antt(diag):
+    """Só LOCALIZAÇÃO. As 36 páginas de tarifa do gov.br saíram: o custo passou
+    a ser praças × eixos × tarifa única, e buscá-las era 8 min de workflow para
+    um dado que 262 das 375 praças nem publicam."""
     locais = P.antt_localizacoes(diag)
-    concs = sorted({x["concessionaria"] for x in locais})
-    tarifas = {}
-    for c in concs:
-        t = P.antt_tarifas(c, diag)
-        if t:
-            tarifas[c] = t
-    diag["antt_concessionarias_com_tarifa"] = sorted(tarifas)
-
-    out = []
-    for x in locais:
-        t = tarifas.get(x["concessionaria"])
-        v3 = v6 = None
-        if t:
-            if t["colunas"]:
-                pref = x["nome"].split("-")[0].strip()
-                if pref in t["colunas"]:
-                    i = t["colunas"].index(pref)
-                    v3 = (t["3e"] or [None] * 99)[i] if t["3e"] else None
-                    v6 = (t["6e"] or [None] * 99)[i] if t["6e"] else None
-            else:
-                v3, v6 = t["3e"], t["6e"]
-        out.append({
-            "id": _id("ANTT", x["concessionaria"], x["nome"]),
-            "regulador": "ANTT", "concessionaria": x["concessionaria"], "nome": x["nome"],
-            "tipo": x["tipo"], "rodovia": x["rodovia"], "uf": x["uf"], "km": x["km"],
-            "municipio": x["municipio"],
-            "latitude": x["latitude"], "longitude": x["longitude"],
-            "sentido": x["sentido"],
-            "fonteSentido": "dataset ANTT praca-de-pedagio",
-            "situacao": "ativo",
-            "tarifas": {
-                "3e": {"valor": v3, "metodo": "categoria_rodagem_dupla" if v3 else None},
-                "6e": {"valor": v6, "metodo": "categoria_rodagem_dupla" if v6 else None},
-                # A tabela federal termina em 8 eixos e não publica regra de
-                # excedente. Somar 8e + 1e porque a série parece linear seria
-                # inventar norma.
-                "9e": {"valor": None, "metodo": "sem_regra_oficial"},
-            },
-            "vigencia": {"dataBase": None,
-                         "status": "vigente" if v3 else "tarifa_ausente",
-                         "ato": None},
-            "fontes": {"localizacao": P.ANTT_CKAN,
-                       "tarifa": t["url"] if t else None},
-        })
-    return out
-
+    return [{
+        "id": _id("ANTT", x["concessionaria"], x["nome"]),
+        "regulador": "ANTT", "concessionaria": x["concessionaria"], "nome": x["nome"],
+        "tipo": x["tipo"], "rodovia": x["rodovia"], "uf": x["uf"], "km": x["km"],
+        "municipio": x["municipio"],
+        "latitude": x["latitude"], "longitude": x["longitude"],
+        "sentido": x["sentido"],
+        "situacao": "ativo",
+    } for x in locais]
 
 def montar_artesp(diag):
-    pracas, vig = P.artesp_coletar(diag)
+    """Só LOCALIZAÇÃO. O PDF da ARTESP continua sendo lido — é dele que sai a
+    lista das 98 praças com rodovia e km. Só as colunas de tarifa deixaram de
+    ser aproveitadas."""
+    pracas, _vig = P.artesp_coletar(diag)
     idx = carregar_municipios_sp()
     out, sem_geo = [], []
     for x in pracas:
         la, lo, ibge = geocodificar_sp(x["nome"], idx)
         if la is None:
             sem_geo.append(x["nome"])
-        v = x["tarifaPorEixo"]
         out.append({
             "id": _id("ARTESP", x["rodovia"], x["nome"]),
             "regulador": "ARTESP", "concessionaria": None, "nome": x["nome"],
             "tipo": x["tipo"], "rodovia": x["rodovia"], "uf": "SP", "km": x["km"],
             "latitude": la, "longitude": lo, "codigoIbgeMunicipio": ibge,
             "sentido": x["sentido"], "cobranca": x["cobranca"],
-            "fonteSentido": "ARTESP Histórico de Tarifas (Contratos Vigentes)",
             "situacao": "ativo",
-            "tarifaPorEixo": v,
-            # Regra oficial publicada: a coluna é "COMERCIAL POR EIXO".
-            # Multiplicar é aplicar a norma, não inferir.
-            "tarifas": {k: {"valor": round(v * n, 2), "metodo": "tarifa_comercial_por_eixo"}
-                        for k, n in (("3e", 3), ("6e", 6), ("9e", 9))},
-            "vigencia": dict(vig),
-            "fontes": {"localizacao": "ARTESP · rodovia+km do documento oficial; coordenada = sede do município (IBGE)",
-                       "tarifa": P.ARTESP_PEDAGIOS},
         })
     diag["artesp_sem_geocodificacao"] = sem_geo
-    return out, vig
-
+    return out
 
 def validar(pracas, rotulo):
     if not pracas:
@@ -246,10 +161,8 @@ def validar(pracas, rotulo):
     if len(sem_coord) > len(pracas) * 0.2:
         return False, f"{rotulo}: {len(sem_coord)} de {len(pracas)} sem coordenada"
     for p in pracas:
-        for k in ("3e", "6e", "9e"):
-            v = (p["tarifas"][k] or {}).get("valor")
-            if v is not None and (not isinstance(v, (int, float)) or v != v or v <= 0):
-                return False, f"{rotulo}: {p['id']} tem {k} inválido ({v})"
+        if not p.get("nome") or not p.get("rodovia"):
+            return False, f"{rotulo}: {p.get('id')} sem nome ou rodovia"
     return True, "ok"
 
 
@@ -296,25 +209,19 @@ def main():
 
     # ── ARTESP ──────────────────────────────────────────────────────────
     artesp, cov_artesp = anteriores("ARTESP"), "preservado"
-    vig = None
     if not args.so_antt:
         try:
-            novo, vig = montar_artesp(diag)
+            novo = montar_artesp(diag)
             ok, motivo = validar(novo, "ARTESP")
             if ok:
-                artesp = novo
-                cov_artesp = ("ok" if vig["status"] == "vigente" else "tarifa_desatualizada")
+                artesp, cov_artesp = novo, "ok"
             else:
                 diag["artesp_reprovou"] = motivo
                 cov_artesp = "erro_validacao"
         except Exception as e:
             diag["artesp_falhou"] = str(e)[:200]
             cov_artesp = "fonte_indisponivel"
-    if cov_artesp == "preservado" and artesp:
-        st = (artesp[0].get("vigencia") or {}).get("status")
-        cov_artesp = "ok" if st == "vigente" else "tarifa_desatualizada"
-    print(f"ARTESP : {len(artesp)} praças · {cov_artesp}"
-          + (f" · data-base {vig['dataBase']}" if vig else ""))
+    print(f"ARTESP : {len(artesp)} praças · {cov_artesp}")
 
     if not antt and not artesp:
         print("Nenhum provider entregou dados e não há base anterior. Nada gravado.")
@@ -323,25 +230,17 @@ def main():
     pracas = enriquecer(antt + artesp)
 
     doc = {
-        "schemaVersion": 2,
-        "_leiaMe": ("Praças e pórticos de pedágio com tarifa por configuração de eixos. Cada praça "
-                    "carrega a própria vigência: tarifa cujo status não seja \"vigente\" NUNCA "
-                    "promove a rota a COMPLETO. A coordenada das praças paulistas é a sede do "
-                    "município do nome — o motor confirma exigindo também a ref da rodovia na rota."),
+        "schemaVersion": 3,
+        "_leiaMe": ("LOCALIZAÇÃO das praças e pórticos de pedágio. NÃO guarda tarifa: o custo é "
+                    "estimado na interface por praças × eixos × R$ 10,00/eixo/praça. Este arquivo "
+                    "existe para uma coisa só — permitir CONTAR quantas praças a rota cruza, "
+                    "cruzando estas coordenadas com a geometria do OSRM (que não devolve pedágio). "
+                    "A coordenada das praças paulistas é a sede do município do nome; o motor "
+                    "confirma exigindo também a ref da rodovia na rota."),
         "geradoEm": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "coverage": {"ANTT": cov_antt, "ARTESP": cov_artesp},
-        "providers": {
-            "ANTT": {"pracas": len(antt),
-                     "observacao": ("Tabela federal termina em 8 eixos e não publica regra de eixo "
-                                    "excedente: 9e = null.")},
-            "ARTESP": {"pracas": len(artesp),
-                       "vigencia": vig or ((artesp[0].get("vigencia") if artesp else None)),
-                       "observacao": ("Tarifa comercial publicada POR EIXO; 3e/6e/9e são a regra "
-                                      "oficial multiplicada, não inferência.")},
-        },
+        "providers": {"ANTT": {"pracas": len(antt)}, "ARTESP": {"pracas": len(artesp)}},
         "diagnostico": diag,
-        # Campos que a interface consome para decidir status. Sem eles ela não
-        # distingue "praça sem tarifa" de "trecho sem cobertura".
         "jurisdicoesComProvider": ["FEDERAL", "SP"],
         "corredoresConhecidos": corredores(pracas),
         "datasetVersion": versao(pracas),
