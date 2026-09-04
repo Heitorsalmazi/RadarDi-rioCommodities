@@ -29,6 +29,7 @@ USO
 """
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -84,6 +85,79 @@ def geocodificar_sp(nome, indice):
     n = ALIAS_SP.get(n, n)
     m = indice.get(n)
     return (m[2], m[3], m[0]) if m else (None, None, None)
+
+
+def enriquecer(pracas):
+    """Deriva os campos do schema 2 que a interface consome.
+
+    POR QUE ISTO EXISTE: a base v2 foi montada à mão na Fase 4 e o script
+    gravava v1. Cada execução do workflow apagava os campos que o motor de
+    status usa, e a interface passava a chamar de "sem tarifa" tudo o que na
+    verdade era ausência de campo. Derivar aqui fecha esse buraco: o script
+    volta a ser a única fonte do arquivo.
+
+    Nada aqui inventa tarifa. Só nomeia o que já está — ou não está — no dado.
+    """
+    for p in pracas:
+        t = p.get("tarifas") or {}
+        valores = [(t.get(k) or {}).get("valor") for k in ("3e", "6e", "9e")]
+        tem = any(v is not None for v in valores)
+
+        # TRÊS COISAS DIFERENTES, e cada uma tem consequência própria:
+        #   pracaConhecida — a praça consta da fonte oficial. Sempre verdadeira
+        #                    aqui: se não constasse, não estaria nesta lista.
+        #   posicionavel   — tem coordenada para casar com a geometria da rota.
+        #                    As 12 rampas do Rodoanel não têm, e nem por isso
+        #                    deixam de existir.
+        #   tarifaDisponivel — a concessionária publica valor.
+        # Colapsar as três num campo só foi o que fez a interface chamar de
+        # "sem tarifa" praça que era só sem coordenada.
+        p["pracaConhecida"] = True
+        p["posicionavel"] = p.get("latitude") is not None and p.get("longitude") is not None
+        p["tarifaDisponivel"] = tem
+
+        if not tem:
+            if p.get("regulador") == "ANTT":
+                p["motivoSemTarifa"] = ("SEM_CATEGORIA_PUBLICADA"
+                                        if (p.get("fontes") or {}).get("tarifa")
+                                        else "SEM_FONTE_TARIFARIA")
+            else:
+                p["motivoSemTarifa"] = "SEM_FONTE_TARIFARIA"
+        else:
+            p["motivoSemTarifa"] = None
+
+        # Tarifa unitária por eixo: só a ARTESP publica essa regra. No federal
+        # a categoria é fechada, então NÃO se divide o valor de 6 eixos por 6.
+        if p.get("regulador") == "ARTESP":
+            v6 = (t.get("6e") or {}).get("valor")
+            p["tarifaPorEixo"] = round(v6 / 6, 6) if v6 else None
+        else:
+            p["tarifaPorEixo"] = None
+
+        if p.get("sentido") in (None, ""):
+            p["sentido"] = None
+            p.setdefault("fonteSentido", "SEM_FONTE_SENTIDO")
+    return pracas
+
+
+def corredores(pracas):
+    """`UF|RODOVIA` de toda rodovia onde existe praça comprovada.
+
+    Serve para o motor rebaixar uma rota SÓ quando há evidência de cobrança no
+    trecho — e não sempre que a rota toca uma estadual qualquer."""
+    fora = set()
+    for p in pracas:
+        uf, rod = (p.get("uf") or "").strip().upper(), (p.get("rodovia") or "").strip().upper()
+        if uf and rod:
+            fora.add(f"{uf}|{rod}")
+    return sorted(fora)
+
+
+def versao(pracas):
+    """Impressão digital do conteúdo, para a interface invalidar cache sozinha.
+    Não entra data: carimbo de tempo geraria commit diário sem mudança real."""
+    corpo = json.dumps(pracas, ensure_ascii=False, sort_keys=True)
+    return hashlib.sha256(corpo.encode("utf-8")).hexdigest()[:16]
 
 
 def montar_antt(diag):
@@ -246,8 +320,10 @@ def main():
         print("Nenhum provider entregou dados e não há base anterior. Nada gravado.")
         return 1
 
+    pracas = enriquecer(antt + artesp)
+
     doc = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "_leiaMe": ("Praças e pórticos de pedágio com tarifa por configuração de eixos. Cada praça "
                     "carrega a própria vigência: tarifa cujo status não seja \"vigente\" NUNCA "
                     "promove a rota a COMPLETO. A coordenada das praças paulistas é a sede do "
@@ -264,7 +340,12 @@ def main():
                                       "oficial multiplicada, não inferência.")},
         },
         "diagnostico": diag,
-        "pracas": antt + artesp,
+        # Campos que a interface consome para decidir status. Sem eles ela não
+        # distingue "praça sem tarifa" de "trecho sem cobertura".
+        "jurisdicoesComProvider": ["FEDERAL", "SP"],
+        "corredoresConhecidos": corredores(pracas),
+        "datasetVersion": versao(pracas),
+        "pracas": pracas,
     }
 
     if antigo and sem_carimbo(antigo) == sem_carimbo(doc):
