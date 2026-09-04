@@ -1,0 +1,24 @@
+# Dependências do pipeline de opções da B3.
+#
+# POR QUE FAIXAS E NÃO VERSÕES EXATAS
+# ────────────────────────────────────────────────────────────────────────
+# Um piso garante que a API que o código usa existe; um teto de major
+# impede que uma versão nova mude comportamento sem aviso — foi assim que
+# o pandas 2.0 trocou o default de `numeric_only` e quebrou agregações
+# silenciosamente pelo mundo inteiro. Entre os dois, o pip escolhe.
+#
+# Testado com: pandas 2.3.3 · numpy 2.2.6 · pyarrow 25.0.1
+#              xlsxwriter 3.2.9 · openpyxl 3.1.5
+
+pandas>=2.0,<3.0
+numpy>=1.24,<3.0
+
+# Formato da base histórica. Sem ele o coletor cai para CSV comprimido,
+# que funciona mas lê ordens de grandeza mais devagar.
+pyarrow>=14.0,<26.0
+
+# Escrita do Excel. O xlsxwriter é bem mais rápido que o openpyxl para
+# muitas linhas; o openpyxl é usado na CONFERÊNCIA do arquivo gravado,
+# então os dois precisam estar presentes.
+xlsxwriter>=3.1,<4.0
+openpyxl>=3.1,<4.0
