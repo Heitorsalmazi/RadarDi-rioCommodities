@@ -1,0 +1,116 @@
+name: Atualiza base de opções
+
+# Quinta cadeia independente. Nenhuma conhece a outra:
+#   sync-dados.yml        preços, a cada 2 horas, crítico
+#   update-logistica.yml  rotas e municípios, mensal
+#   update-antt.yml       coeficientes do piso mínimo, diário
+#   update-pedagios.yml   praças de pedágio, diário
+#   update-opcoes.yml     cadeia de opções da B3, dias úteis
+#
+# O QUE ESTE WORKFLOW FAZ QUE OS OUTROS NÃO FAZEM
+# ────────────────────────────────────────────────────────────────────────
+# Os outros só BAIXAM. Este ACUMULA: cada pregão coletado entra no Parquet,
+# que é a fonte histórica oficial. Por isso o Parquet volta commitado — sem
+# isso o histórico recomeçaria do zero a cada execução, e os percentis
+# nunca atingiriam os 20 pregões mínimos.
+#
+# Custo: R$ 0. A API de arquivos da B3 é pública e sem chave.
+
+on:
+  schedule:
+    # 23:00 UTC = 20:00 BRT, dias úteis. O pregão agro fecha às 18h e a B3
+    # publica os arquivos consolidados ao longo da noite. Se ainda não
+    # estiverem no ar, `--dias 5` recolhe no dia seguinte: a coleta olha os
+    # cinco últimos pregões e baixa só o que falta na base.
+    - cron: '0 23 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      backfill_inicio:
+        description: 'Backfill — data inicial (AAAA-MM-DD). Deixe vazio para coleta normal.'
+        required: false
+      backfill_fim:
+        description: 'Backfill — data final (AAAA-MM-DD)'
+        required: false
+
+concurrency:
+  group: opcoes
+  cancel-in-progress: false
+
+jobs:
+  opcoes:
+    runs-on: ubuntu-latest
+    # A coleta baixa três CSVs por pregão (cadastro, negociação, posição) e
+    # o gerador leva ~8s. Vinte minutos é folga larga; passar disso é sinal
+    # de que a B3 está pendurando a conexão, e aí é melhor cair fora.
+    timeout-minutes: 20
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Dependências
+        run: pip install --quiet pandas numpy pyarrow xlsxwriter openpyxl
+
+      - name: Coletar pregão e regenerar o Radar
+        id: coleta
+        working-directory: scripts_opcoes
+        # --sem-excel pula o opcoes_historico.xlsx (janela de 3 meses, 114 mil
+        # linhas, ~50s). O Radar não o consome; quem quiser reconstrói local
+        # com --refazer-excel.
+        run: |
+          if [ -n "${{ github.event.inputs.backfill_inicio }}" ]; then
+            python coleta_opcoes_b3.py --sem-excel \
+              --backfill "${{ github.event.inputs.backfill_inicio }}" \
+                         "${{ github.event.inputs.backfill_fim }}"
+          else
+            python coleta_opcoes_b3.py --dias 5 --sem-excel
+          fi
+        continue-on-error: true   # B3 fora do ar não derruba o repositório
+
+      # O script separa as falhas: saída 2 é layout mudado ou validação
+      # reprovada — nesses casos ele NÃO gravou nada, e o aviso precisa
+      # aparecer. Feriado e arquivo ainda não publicado saem com 0.
+      - name: Sinalizar falha de fonte
+        if: steps.coleta.outcome != 'success'
+        run: |
+          echo "::warning::A coleta de opções falhou. O Parquet e o " \
+               "opcoes_radar.xlsx anteriores foram preservados intactos."
+
+      - name: Commit e push com rebase
+        if: steps.coleta.outcome == 'success'
+        run: |
+          set -e
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # SÓ estes dois caminhos. `git add -A` arrastaria o dados.xlsx que
+          # o workflow de preços pode ter baixado no mesmo minuto, e os
+          # subprodutos (logs, temp, backups) que o .gitignore já barra.
+          git add opcoes_radar.xlsx scripts_opcoes/dados_opcoes/
+
+          if git diff --staged --quiet; then
+            echo "Base de opções sem mudanças. Nenhum commit."
+            exit 0
+          fi
+
+          git commit -m "auto: opções B3 $(date -u +'%d/%m/%Y') UTC"
+
+          for tentativa in 1 2 3; do
+            if git push; then
+              echo "Push concluído na tentativa $tentativa."
+              exit 0
+            fi
+            echo "Push rejeitado. Rebase e nova tentativa ($tentativa/3)."
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            sleep 5
+          done
+          echo "Não consegui publicar depois de 3 tentativas."
+          exit 1
