@@ -25,6 +25,12 @@ concurrency:
 jobs:
   pedagios:
     runs-on: ubuntu-latest
+    # São ~40 requisições sequenciais, 36 delas contra o gov.br. Num dia bom o
+    # job leva ~8 min. Sem teto, um gov.br lento levaria o job a horas — todo
+    # dia, sem ninguém olhando. Aqui ele morre antes de virar problema, e o
+    # `continue-on-error` abaixo preserva a base anterior: pula-se o dia, não
+    # se perde dado.
+    timeout-minutes: 20
     permissions:
       contents: write
 
