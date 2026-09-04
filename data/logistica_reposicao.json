@@ -41,26 +41,44 @@
     "BA/Centro Sul Baiano": {
       "uf": "BA",
       "praca": "Centro Sul Baiano",
-      "tipoOrigem": "regiao",
-      "origemRota": null,
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Itarantim, BA, Brasil",
+        "latitude": -15.6528,
+        "longitude": -40.065,
+        "codigoIbge": 2916807,
+        "uf": "BA",
+        "municipio": "Itarantim",
+        "natureza": "referencia_operacional",
+        "observacao": "Cidade de referência operacional definida pela BMS; NÃO é definição oficial CEPEA da praça regional."
+      },
       "distanciaKm": null,
       "pedagios": null,
-      "fonteRota": null,
+      "fonteRota": "referência operacional + coordenada municipal IBGE",
       "fontesPedagio": [],
       "atualizacao": null,
-      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+      "observacao": "Praça regional do CEPEA. A logística usa Itarantim/BA (IBGE 2916807) como ponto de referência operacional, não como definição da praça."
     },
     "BA/Oeste da Bahia": {
       "uf": "BA",
       "praca": "Oeste da Bahia",
-      "tipoOrigem": "regiao",
-      "origemRota": null,
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Santa Rita de Cássia, BA, Brasil",
+        "latitude": -11.0063,
+        "longitude": -44.5255,
+        "codigoIbge": 2928406,
+        "uf": "BA",
+        "municipio": "Santa Rita de Cássia",
+        "natureza": "referencia_operacional",
+        "observacao": "Cidade de referência operacional definida pela BMS; NÃO é definição oficial CEPEA da praça regional."
+      },
       "distanciaKm": null,
       "pedagios": null,
-      "fonteRota": null,
+      "fonteRota": "referência operacional + coordenada municipal IBGE",
       "fontesPedagio": [],
       "atualizacao": null,
-      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+      "observacao": "Praça regional do CEPEA. A logística usa Santa Rita de Cássia/BA (IBGE 2928406) como ponto de referência operacional, não como definição da praça."
     },
     "GO/Goiânia": {
       "uf": "GO",
@@ -88,14 +106,23 @@
     "GO/Norte de Goiás": {
       "uf": "GO",
       "praca": "Norte de Goiás",
-      "tipoOrigem": "regiao",
-      "origemRota": null,
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Porangatu, GO, Brasil",
+        "latitude": -13.4391,
+        "longitude": -49.1503,
+        "codigoIbge": 5218003,
+        "uf": "GO",
+        "municipio": "Porangatu",
+        "natureza": "referencia_operacional",
+        "observacao": "Cidade de referência operacional definida pela BMS; NÃO é definição oficial CEPEA da praça regional."
+      },
       "distanciaKm": null,
       "pedagios": null,
-      "fonteRota": null,
+      "fonteRota": "referência operacional + coordenada municipal IBGE",
       "fontesPedagio": [],
       "atualizacao": null,
-      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+      "observacao": "Praça regional do CEPEA. A logística usa Porangatu/GO (IBGE 5218003) como ponto de referência operacional, não como definição da praça."
     },
     "GO/Rio Verde": {
       "uf": "GO",
@@ -123,26 +150,44 @@
     "MG/Norte de Minas": {
       "uf": "MG",
       "praca": "Norte de Minas",
-      "tipoOrigem": "regiao",
-      "origemRota": null,
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "São Francisco, MG, Brasil",
+        "latitude": -15.9514,
+        "longitude": -44.8593,
+        "codigoIbge": 3161106,
+        "uf": "MG",
+        "municipio": "São Francisco",
+        "natureza": "referencia_operacional",
+        "observacao": "Cidade de referência operacional definida pela BMS; NÃO é definição oficial CEPEA da praça regional."
+      },
       "distanciaKm": null,
       "pedagios": null,
-      "fonteRota": null,
+      "fonteRota": "referência operacional + coordenada municipal IBGE",
       "fontesPedagio": [],
       "atualizacao": null,
-      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+      "observacao": "Praça regional do CEPEA. A logística usa São Francisco/MG (IBGE 3161106) como ponto de referência operacional, não como definição da praça."
     },
     "MG/Triângulo Mineiro": {
       "uf": "MG",
       "praca": "Triângulo Mineiro",
-      "tipoOrigem": "regiao",
-      "origemRota": null,
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Prata, MG, Brasil",
+        "latitude": -19.3086,
+        "longitude": -48.9276,
+        "codigoIbge": 3152808,
+        "uf": "MG",
+        "municipio": "Prata",
+        "natureza": "referencia_operacional",
+        "observacao": "Cidade de referência operacional definida pela BMS; NÃO é definição oficial CEPEA da praça regional."
+      },
       "distanciaKm": null,
       "pedagios": null,
-      "fonteRota": null,
+      "fonteRota": "referência operacional + coordenada municipal IBGE",
       "fontesPedagio": [],
       "atualizacao": null,
-      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+      "observacao": "Praça regional do CEPEA. A logística usa Prata/MG (IBGE 3152808) como ponto de referência operacional, não como definição da praça."
     },
     "MS/Campo Grande": {
       "uf": "MS",
@@ -216,14 +261,23 @@
     "MS/Pantanal": {
       "uf": "MS",
       "praca": "Pantanal",
-      "tipoOrigem": "regiao",
-      "origemRota": null,
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Corumbá, MS, Brasil",
+        "latitude": -19.0077,
+        "longitude": -57.651,
+        "codigoIbge": 5003207,
+        "uf": "MS",
+        "municipio": "Corumbá",
+        "natureza": "referencia_operacional",
+        "observacao": "Cidade de referência operacional definida pela BMS; NÃO é definição oficial CEPEA da praça regional."
+      },
       "distanciaKm": null,
       "pedagios": null,
-      "fonteRota": null,
+      "fonteRota": "referência operacional + coordenada municipal IBGE",
       "fontesPedagio": [],
       "atualizacao": null,
-      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+      "observacao": "Praça regional do CEPEA. A logística usa Corumbá/MS (IBGE 5003207) como ponto de referência operacional, não como definição da praça."
     },
     "MS/Três Lagoas": {
       "uf": "MS",
@@ -389,50 +443,86 @@
     "PA/Pará": {
       "uf": "PA",
       "praca": "Pará",
-      "tipoOrigem": "regiao",
-      "origemRota": null,
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "São Félix do Xingu, PA, Brasil",
+        "latitude": -6.6425,
+        "longitude": -51.9904,
+        "codigoIbge": 1507300,
+        "uf": "PA",
+        "municipio": "São Félix do Xingu",
+        "natureza": "referencia_operacional",
+        "observacao": "Cidade de referência operacional definida pela BMS; NÃO é definição oficial CEPEA da praça regional."
+      },
       "distanciaKm": null,
       "pedagios": null,
-      "fonteRota": null,
+      "fonteRota": "referência operacional + coordenada municipal IBGE",
       "fontesPedagio": [],
       "atualizacao": null,
-      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+      "observacao": "Praça regional do CEPEA. A logística usa São Félix do Xingu/PA (IBGE 1507300) como ponto de referência operacional, não como definição da praça."
     },
     "PR/Noroeste do Paraná": {
       "uf": "PR",
       "praca": "Noroeste do Paraná",
-      "tipoOrigem": "regiao",
-      "origemRota": null,
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Umuarama, PR, Brasil",
+        "latitude": -23.7656,
+        "longitude": -53.3201,
+        "codigoIbge": 4128104,
+        "uf": "PR",
+        "municipio": "Umuarama",
+        "natureza": "referencia_operacional",
+        "observacao": "Cidade de referência operacional definida pela BMS; NÃO é definição oficial CEPEA da praça regional."
+      },
       "distanciaKm": null,
       "pedagios": null,
-      "fonteRota": null,
+      "fonteRota": "referência operacional + coordenada municipal IBGE",
       "fontesPedagio": [],
       "atualizacao": null,
-      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+      "observacao": "Praça regional do CEPEA. A logística usa Umuarama/PR (IBGE 4128104) como ponto de referência operacional, não como definição da praça."
     },
     "RO/Rondônia": {
       "uf": "RO",
       "praca": "Rondônia",
-      "tipoOrigem": "regiao",
-      "origemRota": null,
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Porto Velho, RO, Brasil",
+        "latitude": -8.7608,
+        "longitude": -63.8999,
+        "codigoIbge": 1100205,
+        "uf": "RO",
+        "municipio": "Porto Velho",
+        "natureza": "referencia_operacional",
+        "observacao": "Cidade de referência operacional definida pela BMS; NÃO é definição oficial CEPEA da praça regional."
+      },
       "distanciaKm": null,
       "pedagios": null,
-      "fonteRota": null,
+      "fonteRota": "referência operacional + coordenada municipal IBGE",
       "fontesPedagio": [],
       "atualizacao": null,
-      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+      "observacao": "Praça regional do CEPEA. A logística usa Porto Velho/RO (IBGE 1100205) como ponto de referência operacional, não como definição da praça."
     },
     "RS/Rio Grande do Sul": {
       "uf": "RS",
       "praca": "Rio Grande do Sul",
-      "tipoOrigem": "regiao",
-      "origemRota": null,
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Alegrete, RS, Brasil",
+        "latitude": -29.7902,
+        "longitude": -55.7949,
+        "codigoIbge": 4300406,
+        "uf": "RS",
+        "municipio": "Alegrete",
+        "natureza": "referencia_operacional",
+        "observacao": "Cidade de referência operacional definida pela BMS; NÃO é definição oficial CEPEA da praça regional."
+      },
       "distanciaKm": null,
       "pedagios": null,
-      "fonteRota": null,
+      "fonteRota": "referência operacional + coordenada municipal IBGE",
       "fontesPedagio": [],
       "atualizacao": null,
-      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+      "observacao": "Praça regional do CEPEA. A logística usa Alegrete/RS (IBGE 4300406) como ponto de referência operacional, não como definição da praça."
     },
     "SP/Araçatuba": {
       "uf": "SP",
@@ -460,14 +550,23 @@
     "SP/Bauru/Marília": {
       "uf": "SP",
       "praca": "Bauru/Marília",
-      "tipoOrigem": "regiao",
-      "origemRota": null,
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Marília, SP, Brasil",
+        "latitude": -22.2171,
+        "longitude": -49.9501,
+        "codigoIbge": 3529005,
+        "uf": "SP",
+        "municipio": "Marília",
+        "natureza": "referencia_operacional",
+        "observacao": "Cidade de referência operacional definida pela BMS; NÃO é definição oficial CEPEA da praça regional."
+      },
       "distanciaKm": null,
       "pedagios": null,
-      "fonteRota": null,
+      "fonteRota": "referência operacional + coordenada municipal IBGE",
       "fontesPedagio": [],
       "atualizacao": null,
-      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+      "observacao": "Praça regional do CEPEA. A logística usa Marília/SP (IBGE 3529005) como ponto de referência operacional, não como definição da praça."
     },
     "SP/Presidente Prudente": {
       "uf": "SP",
@@ -518,26 +617,44 @@
     "SP/Vale do Paraíba": {
       "uf": "SP",
       "praca": "Vale do Paraíba",
-      "tipoOrigem": "regiao",
-      "origemRota": null,
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Cunha, SP, Brasil",
+        "latitude": -23.0731,
+        "longitude": -44.9576,
+        "codigoIbge": 3513603,
+        "uf": "SP",
+        "municipio": "Cunha",
+        "natureza": "referencia_operacional",
+        "observacao": "Cidade de referência operacional definida pela BMS; NÃO é definição oficial CEPEA da praça regional."
+      },
       "distanciaKm": null,
       "pedagios": null,
-      "fonteRota": null,
+      "fonteRota": "referência operacional + coordenada municipal IBGE",
       "fontesPedagio": [],
       "atualizacao": null,
-      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+      "observacao": "Praça regional do CEPEA. A logística usa Cunha/SP (IBGE 3513603) como ponto de referência operacional, não como definição da praça."
     },
     "TO/Tocantins": {
       "uf": "TO",
       "praca": "Tocantins",
-      "tipoOrigem": "regiao",
-      "origemRota": null,
+      "tipoOrigem": "municipio",
+      "origemRota": {
+        "nome": "Araguaçu, TO, Brasil",
+        "latitude": -12.9289,
+        "longitude": -49.8231,
+        "codigoIbge": 1702000,
+        "uf": "TO",
+        "municipio": "Araguaçu",
+        "natureza": "referencia_operacional",
+        "observacao": "Cidade de referência operacional definida pela BMS; NÃO é definição oficial CEPEA da praça regional."
+      },
       "distanciaKm": null,
       "pedagios": null,
-      "fonteRota": null,
+      "fonteRota": "referência operacional + coordenada municipal IBGE",
       "fontesPedagio": [],
       "atualizacao": null,
-      "observacao": "Praça regional do CEPEA: não corresponde a um ponto geográfico único. Sem ponto logístico representativo cadastrado, não há rota automática."
+      "observacao": "Praça regional do CEPEA. A logística usa Araguaçu/TO (IBGE 1702000) como ponto de referência operacional, não como definição da praça."
     }
   },
   "historicoAntt": [
