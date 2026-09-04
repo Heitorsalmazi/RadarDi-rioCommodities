@@ -55,9 +55,13 @@ jobs:
         with:
           python-version: '3.11'
           cache: pip
+          # Sem apontar o arquivo, o setup-python procura requirements.txt na
+          # RAIZ e falha o job inteiro quando não acha — o nosso mora dentro
+          # de scripts_opcoes/, junto do código que ele descreve.
+          cache-dependency-path: scripts_opcoes/requirements.txt
 
       - name: Dependências
-        run: pip install --quiet pandas numpy pyarrow xlsxwriter openpyxl
+        run: pip install --quiet -r scripts_opcoes/requirements.txt
 
       - name: Coletar pregão e regenerar o Radar
         id: coleta
