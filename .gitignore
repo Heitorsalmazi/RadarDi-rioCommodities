@@ -1,0 +1,11 @@
+testes/node_modules/
+
+# Subprodutos do pipeline de opções. São recriáveis e não descrevem a
+# verdade do histórico — quem descreve é dados_opcoes/*.parquet, que É
+# versionado de propósito.
+scripts_opcoes/logs/
+scripts_opcoes/temp/
+scripts_opcoes/__pycache__/
+scripts_opcoes/collectors/__pycache__/
+backups/
+opcoes_historico.xlsx
