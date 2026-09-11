@@ -1,0 +1,2526 @@
+{
+ "schemaVersion": 1,
+ "_leiaMe": "Auditoria das coordenadas ANTT contra o OpenStreetMap. A coordenada ANTT é OFICIAL e continua valendo — nenhuma foi trocada por OSM. Só a classe INCONSISTENTE muda o detector: a praça deixa de ser contada sozinha e vira PENDÊNCIA quando a rota usa a rodovia dela perto da região indicada. Gerado por scripts/auditar_antt_osm.py; não é tocado pelo workflow nem pela quantidade manual.",
+ "fonte": "OpenStreetMap barrier=toll_booth + highway=toll_gantry · Overpass base 2026-09-10T13:57:26Z · 1.098 nós em 545 pontos físicos (≤400 m) · base ANTT datasetVersion fdbba0774033cb4c",
+ "criterio": {
+  "COORDENADA_OFICIAL_VALIDADA": "ponto OSM a ≤500 m (+800 m quando a coordenada tem 2 casas decimais) na mesma rodovia ou em via sem ref",
+  "COORDENADA_OSM_VALIDADA": "oficial comprovadamente errada e único ponto OSM da mesma rodovia que a substitui",
+  "AMBIGUA": "ponto OSM da mesma rodovia a até 10 km sem coincidir, ou cabine OSM em outra rodovia",
+  "INCONSISTENTE": "contradição interna na própria base (km × distância, par A/B do mesmo km afastado) e nenhum ponto OSM perto",
+  "SEM_VALIDACAO": "nada no OSM a menos de 10 km na mesma rodovia"
+ },
+ "coordenadasAlteradas": 0,
+ "resumo": {
+  "COORDENADA_OFICIAL_VALIDADA": 239,
+  "AMBIGUA": 16,
+  "INCONSISTENTE": 5,
+  "SEM_VALIDACAO": 17,
+  "COORDENADA_OSM_VALIDADA": 0
+ },
+ "registros": {
+  "ANTT_AUTOPISTA_FLUMINENSE_CONSELHEIRO_JOSINO": {
+   "distanciaOsmM": 23,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 23,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 23 m"
+  },
+  "ANTT_AUTOPISTA_FLUMINENSE_SERRINHA": {
+   "distanciaOsmM": 49,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 49,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 49 m"
+  },
+  "ANTT_AUTOPISTA_FLUMINENSE_CASIMIRO_DE_ABREU": {
+   "distanciaOsmM": 52,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 52,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 52 m"
+  },
+  "ANTT_AUTOPISTA_FLUMINENSE_RIO_BONITO": {
+   "distanciaOsmM": 52,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 52,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 52 m"
+  },
+  "ANTT_AUTOPISTA_FLUMINENSE_SAO_GONCALO": {
+   "distanciaOsmM": 26,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 26,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 26 m"
+  },
+  "ANTT_AUTOPISTA_LITORAL_SUL_P1": {
+   "distanciaOsmM": 24,
+   "refsOsm": "BR-376",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 24,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 24 m"
+  },
+  "ANTT_AUTOPISTA_LITORAL_SUL_P3": {
+   "distanciaOsmM": 13,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 13,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 13 m"
+  },
+  "ANTT_AUTOPISTA_LITORAL_SUL_P2": {
+   "distanciaOsmM": 22,
+   "refsOsm": "BR-101/BR-376",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 22,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 22 m"
+  },
+  "ANTT_AUTOPISTA_LITORAL_SUL_P5": {
+   "distanciaOsmM": 11,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 11,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 11 m"
+  },
+  "ANTT_AUTOPISTA_LITORAL_SUL_P4": {
+   "distanciaOsmM": 31,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 31,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 31 m"
+  },
+  "ANTT_AUTOPISTA_PLANALTO_SUL_SANTA_CECILIA": {
+   "distanciaOsmM": 4245,
+   "refsOsm": "BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 4245,
+   "casasDecimais": 5,
+   "classe": "AMBIGUA",
+   "motivo": "ponto OSM mais próximo da BR-116 a 4.2 km — não coincide com a coordenada oficial"
+  },
+  "ANTT_AUTOPISTA_PLANALTO_SUL_CORREIA_PINTO": {
+   "distanciaOsmM": 6697,
+   "refsOsm": "BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 6697,
+   "casasDecimais": 5,
+   "classe": "INCONSISTENTE",
+   "motivo": "km 233.16 e 152 (SANTA CECÍLIA) distam 81 km de estrada mas 5.4 km em linha reta; nenhum ponto OSM a menos de 6.7 km",
+   "discrepanciaM": 6697,
+   "regiaoAproximada": {
+    "lat": -27.5877,
+    "lon": -50.3614,
+    "raioM": 25000,
+    "fonte": "sede de Correia Pinto/SC (a coordenada publicada repete a latitude de outra praça)"
+   }
+  },
+  "ANTT_AUTOPISTA_PLANALTO_SUL_RIO_NEGRO": {
+   "distanciaOsmM": 22,
+   "refsOsm": "BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 22,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 22 m"
+  },
+  "ANTT_AUTOPISTA_PLANALTO_SUL_FAZENDA_RIO_GRANDE": {
+   "distanciaOsmM": 133,
+   "refsOsm": "BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 133,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 133 m"
+  },
+  "ANTT_AUTOPISTA_PLANALTO_SUL_MONTE_CASTELO": {
+   "distanciaOsmM": 40,
+   "refsOsm": "BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 40,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 40 m"
+  },
+  "ANTT_AUTOPISTA_REGIS_BITTENCOURT_CAMPINA_GRANDE_DO_SUL": {
+   "distanciaOsmM": 13,
+   "refsOsm": "BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 13,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 13 m"
+  },
+  "ANTT_AUTOPISTA_REGIS_BITTENCOURT_MIRACATU": {
+   "distanciaOsmM": 18,
+   "refsOsm": "SP-230/BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 18,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 18 m"
+  },
+  "ANTT_AUTOPISTA_REGIS_BITTENCOURT_JUQUIA": {
+   "distanciaOsmM": 17,
+   "refsOsm": "SP-230/BR-116/BR-478",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 17,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 17 m"
+  },
+  "ANTT_AUTOPISTA_REGIS_BITTENCOURT_SAO_LOURENCO_DA_SERRA": {
+   "distanciaOsmM": 21,
+   "refsOsm": "SP-230/BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 21,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 21 m"
+  },
+  "ANTT_AUTOPISTA_REGIS_BITTENCOURT_BARRA_DO_TURVO": {
+   "distanciaOsmM": 13,
+   "refsOsm": "SP-230/BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 13,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 13 m"
+  },
+  "ANTT_AUTOPISTA_REGIS_BITTENCOURT_CAJATI": {
+   "distanciaOsmM": 11,
+   "refsOsm": "SP-230/BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 11,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 11 m"
+  },
+  "ANTT_CONCEBRA_P2_GOIANAPOLIS": {
+   "distanciaOsmM": 38,
+   "refsOsm": "BR-153/BR-060",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 38,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 38 m"
+  },
+  "ANTT_CONCEBRA_P1_ALEXANIA": {
+   "distanciaOsmM": 10,
+   "refsOsm": "BR-060",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 10,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 10 m"
+  },
+  "ANTT_CONCER_P1": {
+   "distanciaOsmM": 23,
+   "refsOsm": "BR-040",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 23,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 23 m"
+  },
+  "ANTT_CONCER_P2": {
+   "distanciaOsmM": 68,
+   "refsOsm": "BR-040",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 68,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 68 m"
+  },
+  "ANTT_CONCER_P3": {
+   "distanciaOsmM": 8,
+   "refsOsm": "BR-040/LMG-874",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 8,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 8 m"
+  },
+  "ANTT_ECOSUL_PRACA_GLORIA": {
+   "distanciaOsmM": 9,
+   "refsOsm": "BR-392/BR-471",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 9,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 9 m"
+  },
+  "ANTT_ECOSUL_PRACA_PAVAO": {
+   "distanciaOsmM": 3,
+   "refsOsm": "BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 3,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 3 m"
+  },
+  "ANTT_ECOSUL_PRACA_CRISTAL": {
+   "distanciaOsmM": 7,
+   "refsOsm": "BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 7,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 7 m"
+  },
+  "ANTT_ECOSUL_PRACA_RETIRO": {
+   "distanciaOsmM": 14,
+   "refsOsm": "BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 14,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 14 m"
+  },
+  "ANTT_ECOSUL_PRACA_CAPAO_SECO": {
+   "distanciaOsmM": 19,
+   "refsOsm": "BR-392/BR-471",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 19,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 19 m"
+  },
+  "ANTT_ECOVIAS_CAPIXABA_P3_ARACRUZ": {
+   "distanciaOsmM": 8,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 8,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 8 m"
+  },
+  "ANTT_ECOVIAS_CAPIXABA_P5_GUARAPARI": {
+   "distanciaOsmM": 8,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 8,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 8 m"
+  },
+  "ANTT_ECOVIAS_CAPIXABA_P6_ITAPEMIRIM": {
+   "distanciaOsmM": 11,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 11,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 11 m"
+  },
+  "ANTT_ECOVIAS_CAPIXABA_P7_MIMOSO_DO_SUL": {
+   "distanciaOsmM": 7,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 7,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 7 m"
+  },
+  "ANTT_ECOVIAS_CAPIXABA_P1_PEDRO_CANARIO": {
+   "distanciaOsmM": 9,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 9,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 9 m"
+  },
+  "ANTT_ECOVIAS_CAPIXABA_P2_SAO_MATEUS": {
+   "distanciaOsmM": 6,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 6,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 6 m"
+  },
+  "ANTT_ECOVIAS_CAPIXABA_P4_SERRA": {
+   "distanciaOsmM": 10,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 10,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 10 m"
+  },
+  "ANTT_ECOVIAS_DO_ARAGUAIA_P1_ALIANCA_DO_TOCANTINS": {
+   "distanciaOsmM": 15,
+   "refsOsm": "BR-153",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 15,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 15 m"
+  },
+  "ANTT_ECOVIAS_DO_ARAGUAIA_P2_ALVORADA": {
+   "distanciaOsmM": 84,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 84 m (via OSM sem ref) · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_ECOVIAS_DO_ARAGUAIA_P6_HIDROLINA": {
+   "distanciaOsmM": 5,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 5 m (via OSM sem ref)"
+  },
+  "ANTT_ECOVIAS_DO_ARAGUAIA_P5_CAMPINORTE": {
+   "distanciaOsmM": 11,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 11 m (via OSM sem ref)"
+  },
+  "ANTT_ECOVIAS_DO_ARAGUAIA_P9_CORUMBA_DE_GOIAS": {
+   "distanciaOsmM": 296,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 296 m (via OSM sem ref)"
+  },
+  "ANTT_ECOVIAS_DO_ARAGUAIA_P4_ESTRELA_DO_NORTE": {
+   "distanciaOsmM": 431,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 431 m (via OSM sem ref)"
+  },
+  "ANTT_ECOVIAS_DO_ARAGUAIA_P7_JARAGUA": {
+   "distanciaOsmM": 14,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 14 m (via OSM sem ref)"
+  },
+  "ANTT_ECOVIAS_DO_ARAGUAIA_P3_PORANGATU": {
+   "distanciaOsmM": 85,
+   "refsOsm": "BR-153",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 85,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 85 m"
+  },
+  "ANTT_ECOVIAS_DO_ARAGUAIA_P8_SANTA_RITA_DO_NOVO_DESTINO": {
+   "distanciaOsmM": 12,
+   "refsOsm": "BR-080",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 12,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 12 m"
+  },
+  "ANTT_ECOVIAS_DO_CERRADO_P7_JATAI": {
+   "distanciaOsmM": 155,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 155 m (via OSM sem ref) · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_ECOVIAS_DO_CERRADO_P6_CACHOEIRA_ALTA": {
+   "distanciaOsmM": 307,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 307 m (via OSM sem ref) · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_ECOVIAS_DO_CERRADO_P3_ITUIUTABA": {
+   "distanciaOsmM": 308,
+   "refsOsm": "BR-365",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 308,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 308 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_ECOVIAS_DO_CERRADO_P1_UBERLANDIA": {
+   "distanciaOsmM": 389,
+   "refsOsm": "BR-365",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 389,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 389 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_ECOVIAS_DO_CERRADO_P2_MONTE_ALEGRE": {
+   "distanciaOsmM": 534,
+   "refsOsm": "BR-365",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 534,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 534 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_ECOVIAS_DO_CERRADO_P4_SANTA_VITORIA": {
+   "distanciaOsmM": 17,
+   "refsOsm": "BR-365",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 17,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 17 m"
+  },
+  "ANTT_ECOVIAS_MINAS_GOIAS_UBERABA": {
+   "distanciaOsmM": 277,
+   "refsOsm": "BR-050",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 277,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 277 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_ECOVIAS_MINAS_GOIAS_ARAGUARI_I": {
+   "distanciaOsmM": 344,
+   "refsOsm": "BR-050",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 344,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 344 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_ECOVIAS_MINAS_GOIAS_ARAGUARI_II": {
+   "distanciaOsmM": 461,
+   "refsOsm": "BR-050",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 461,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 461 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_ECOVIAS_MINAS_GOIAS_CAMPO_ALEGRE": {
+   "distanciaOsmM": 215,
+   "refsOsm": "BR-050",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 215,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 215 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_ECOVIAS_MINAS_GOIAS_IPAMERI": {
+   "distanciaOsmM": 194,
+   "refsOsm": "BR-050",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 194,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 194 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_ECOVIAS_PONTE_NITEROI_1": {
+   "distanciaOsmM": 15,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 15,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 15 m"
+  },
+  "ANTT_ECOVIAS_RIO_MINAS_P04_VIUVA_GRACA": {
+   "distanciaOsmM": 15,
+   "refsOsm": "BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 15,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 15 m"
+  },
+  "ANTT_ECOVIAS_RIO_MINAS_P05_VIUVA_GRACA_B_": {
+   "distanciaOsmM": 9,
+   "refsOsm": "BR-465",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 1390,
+   "casasDecimais": 5,
+   "classe": "AMBIGUA",
+   "motivo": "cabine OSM a 9 m, mas na via BR-465 — não na BR-116; o ponto da BR-116 mais próximo fica a 1390 m"
+  },
+  "ANTT_ECOVIAS_RIO_MINAS_P14_INHAPIM": {
+   "distanciaOsmM": 41,
+   "refsOsm": "BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 41,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 41 m"
+  },
+  "ANTT_ECOVIAS_RIO_MINAS_P10_LARANJAL": {
+   "distanciaOsmM": 24,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 24 m (via OSM sem ref)"
+  },
+  "ANTT_ECOVIAS_RIO_MINAS_P09_LEOPOLDINA": {
+   "distanciaOsmM": 19,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 19 m (via OSM sem ref)"
+  },
+  "ANTT_ECOVIAS_RIO_MINAS_P15_ENGENHEIRO_CALDAS": {
+   "distanciaOsmM": 46,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 46 m (via OSM sem ref)"
+  },
+  "ANTT_ECOVIAS_RIO_MINAS_P11_SAO_FRANCISCO_DO_GLORIA": {
+   "distanciaOsmM": 18,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 18 m (via OSM sem ref)"
+  },
+  "ANTT_ECOVIAS_RIO_MINAS_P12_SAO_JOAO_DO_MANHUACU": {
+   "distanciaOsmM": 11,
+   "refsOsm": "BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 11,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 11 m"
+  },
+  "ANTT_ECOVIAS_RIO_MINAS_P13_SANTA_BARBARA_DO_LESTE": {
+   "distanciaOsmM": 19,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 19 m (via OSM sem ref)"
+  },
+  "ANTT_ECOVIAS_RIO_MINAS_P07_MAGE": {
+   "distanciaOsmM": 24,
+   "refsOsm": "BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 24,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 24 m"
+  },
+  "ANTT_ECOVIAS_RIO_MINAS_P08_GUAPIMIRIM": {
+   "distanciaOsmM": 215,
+   "refsOsm": "BR-493",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 215,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 215 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_ECOVIAS_RIO_MINAS_P06_ITAGUAI": {
+   "distanciaOsmM": 21,
+   "refsOsm": "BR-493",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 21,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 21 m"
+  },
+  "ANTT_ELOVIAS_P1": {
+   "distanciaOsmM": 21,
+   "refsOsm": "BR-040",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 21,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 21 m"
+  },
+  "ANTT_ELOVIAS_P3": {
+   "distanciaOsmM": 8,
+   "refsOsm": "BR-040/LMG-874",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 8,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 8 m"
+  },
+  "ANTT_ELOVIAS_P2": {
+   "distanciaOsmM": 68,
+   "refsOsm": "BR-040",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 68,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 68 m"
+  },
+  "ANTT_EPR_IGUACU_P01_FREEFLOW_SANTA_LUCIA_NORTE": {
+   "distanciaOsmM": 255,
+   "refsOsm": "BR-163",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 255,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 255 m"
+  },
+  "ANTT_EPR_IGUACU_P01_FREEFLOW_SANTA_LUCIA_SUL": {
+   "distanciaOsmM": 21,
+   "refsOsm": "BR-163",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 21,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 21 m"
+  },
+  "ANTT_EPR_IGUACU_P07_SAO_MIQUEL_DO_IGUACU": {
+   "distanciaOsmM": 14,
+   "refsOsm": "BR-277",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 14,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 14 m"
+  },
+  "ANTT_EPR_IGUACU_P02_PRUDENTROPOLIS": {
+   "distanciaOsmM": 14,
+   "refsOsm": "BR-277/BR-373",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 14,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 14 m"
+  },
+  "ANTT_EPR_IGUACU_P9_FREEFLOW_VITORINO": {
+   "distanciaOsmM": 18,
+   "refsOsm": "PRC-280",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 18,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 18 m"
+  },
+  "ANTT_EPR_IGUACU_P8_FREEFLOW_AMPERE": {
+   "distanciaOsmM": 655,
+   "refsOsm": "PR-182",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 655,
+   "casasDecimais": 5,
+   "classe": "AMBIGUA",
+   "motivo": "ponto OSM mais próximo da 182 a 0.7 km — não coincide com a coordenada oficial"
+  },
+  "ANTT_EPR_IGUACU_P03_CANDOI": {
+   "distanciaOsmM": 6,
+   "refsOsm": "BR-277/BR-373",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 6,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 6 m"
+  },
+  "ANTT_EPR_IGUACU_P05_CASCAVEL": {
+   "distanciaOsmM": 7,
+   "refsOsm": "BR-277",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 7,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 7 m"
+  },
+  "ANTT_EPR_IGUACU_P06_CEU_AZUL": {
+   "distanciaOsmM": 16,
+   "refsOsm": "BR-277",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 16,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 16 m"
+  },
+  "ANTT_EPR_IGUACU_P04_LARANJEIRAS_DO_SUL": {
+   "distanciaOsmM": 64,
+   "refsOsm": "BR-277",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 64,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 64 m"
+  },
+  "ANTT_EPR_PARANA_FREE_FLOW_MARIALVA_P06_DECRESCENTE": {
+   "distanciaOsmM": 1791,
+   "refsOsm": "PR-897",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "INCONSISTENTE",
+   "motivo": "mesmo km do par \"Free Flow Marialva - P06\" (196) e 4.5 km de distância — pórticos A/B do mesmo km ficam lado a lado; nenhum ponto OSM a menos de 1.8 km",
+   "discrepanciaM": 4493
+  },
+  "ANTT_EPR_PARANA_FREE_FLOW_MARIALVA_P06": {
+   "distanciaOsmM": 2702,
+   "refsOsm": "PR-897",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "INCONSISTENTE",
+   "motivo": "mesmo km do par \"Free Flow Marialva - P06 Decrescente\" (196) e 4.5 km de distância — pórticos A/B do mesmo km ficam lado a lado; nenhum ponto OSM a menos de 2.7 km",
+   "discrepanciaM": 4493
+  },
+  "ANTT_EPR_PARANA_FREE_FLOW_JATAIZINHO_P08_DECRESCENTE": {
+   "distanciaOsmM": 636,
+   "refsOsm": "BR-369",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 636,
+   "casasDecimais": 5,
+   "classe": "AMBIGUA",
+   "motivo": "ponto OSM mais próximo da BR-369 a 0.6 km — não coincide com a coordenada oficial"
+  },
+  "ANTT_EPR_PARANA_FREE_FLOW_JATAIZINHO_P08": {
+   "distanciaOsmM": 220,
+   "refsOsm": "BR-369",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 220,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 220 m"
+  },
+  "ANTT_EPR_PARANA_VALIDADOR_7012_ROLANDIA_P07": {
+   "distanciaOsmM": 4091,
+   "refsOsm": "BR-369",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "SEM_VALIDACAO",
+   "motivo": "nenhum ponto OSM da 444 a menos de 10 km (o mais próximo, em BR-369, a 4.1 km)"
+  },
+  "ANTT_EPR_PARANA_FREE_FLOW_PRES_CASTELO_BRANCO_P05_DECRESCENTE": {
+   "distanciaOsmM": 2759,
+   "refsOsm": "BR-376",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 2759,
+   "casasDecimais": 5,
+   "classe": "INCONSISTENTE",
+   "motivo": "mesmo km do par \"Free Flow Pres. Castelo Branco - P05\" (145.8) e 4.7 km de distância — pórticos A/B do mesmo km ficam lado a lado; nenhum ponto OSM a menos de 2.8 km",
+   "discrepanciaM": 4670
+  },
+  "ANTT_EPR_PARANA_FREE_FLOW_PRES_CASTELO_BRANCO_P05": {
+   "distanciaOsmM": 2019,
+   "refsOsm": "BR-376",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 2019,
+   "casasDecimais": 5,
+   "classe": "INCONSISTENTE",
+   "motivo": "mesmo km do par \"Free Flow Pres. Castelo Branco - P05 Decrescente\" (145.8) e 4.7 km de distância — pórticos A/B do mesmo km ficam lado a lado; nenhum ponto OSM a menos de 2.0 km",
+   "discrepanciaM": 4670
+  },
+  "ANTT_EPR_PARANA_VALIDADOR_7011_ROLANDIA_P07": {
+   "distanciaOsmM": 32,
+   "refsOsm": "BR-369",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 32,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 32 m"
+  },
+  "ANTT_EPR_PARANA_FREE_FLOW_ROLANDIA_P07": {
+   "distanciaOsmM": 213,
+   "refsOsm": "BR-369",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 213,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 213 m"
+  },
+  "ANTT_EPR_PARANA_FREE_FLOW_ROLANDIA_P07_DECRESCENTE": {
+   "distanciaOsmM": 6,
+   "refsOsm": "BR-369",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 6,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 6 m"
+  },
+  "ANTT_EPR_VIA_MINEIRA_P2_LAFAIETE": {
+   "distanciaOsmM": 8,
+   "refsOsm": "BR-040",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 8,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 8 m"
+  },
+  "ANTT_EPR_VIA_MINEIRA_P1_ITABIRITO": {
+   "distanciaOsmM": 17,
+   "refsOsm": "BR-040",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 17,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 17 m"
+  },
+  "ANTT_EPR_VIA_MINEIRA_P3_BARBACENA": {
+   "distanciaOsmM": 5,
+   "refsOsm": "BR-040",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 5,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 5 m"
+  },
+  "ANTT_LITORAL_PIONEIRO_P01_SAO_JOSE_DOS_PINHAIS": {
+   "distanciaOsmM": 420,
+   "refsOsm": "BR-277",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 420,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 420 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_LITORAL_PIONEIRO_P07_QUATIGUA": {
+   "distanciaOsmM": 36388,
+   "refsOsm": "PR-151",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "SEM_VALIDACAO",
+   "motivo": "nenhum ponto OSM da 092 a menos de 10 km (o mais próximo, em PR-151, a 36.4 km)"
+  },
+  "ANTT_LITORAL_PIONEIRO_P02_SENGES": {
+   "distanciaOsmM": 20,
+   "refsOsm": "PR-151",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 20,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 20 m"
+  },
+  "ANTT_LITORAL_PIONEIRO_P05_CARAMBEI": {
+   "distanciaOsmM": 20,
+   "refsOsm": "PR-151",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 20,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 20 m"
+  },
+  "ANTT_LITORAL_PIONEIRO_P03_JACAREZINHO": {
+   "distanciaOsmM": 11,
+   "refsOsm": "BR-153/BR-369",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 11,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 11 m"
+  },
+  "ANTT_LITORAL_PIONEIRO_P08_JACAREZINHO_AUX_I": {
+   "distanciaOsmM": 18,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 18 m (via OSM sem ref)"
+  },
+  "ANTT_LITORAL_PIONEIRO_P09_JACAREZINHO_AUX_II": {
+   "distanciaOsmM": 3,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 582,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 3 m (via OSM sem ref)"
+  },
+  "ANTT_LITORAL_PIONEIRO_P06_JAGUARIAIVA": {
+   "distanciaOsmM": 25,
+   "refsOsm": "PR-151",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 25,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 25 m"
+  },
+  "ANTT_MOTIVA_MINAS_SP_2_VARGEM_": {
+   "distanciaOsmM": 6,
+   "refsOsm": "SP-010/BR-381",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 6,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 6 m"
+  },
+  "ANTT_MOTIVA_MINAS_SP_3_CAMBUI_": {
+   "distanciaOsmM": 17,
+   "refsOsm": "BR-381",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 17,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 17 m"
+  },
+  "ANTT_MOTIVA_MINAS_SP_5_CARMO_DA_CACHOEIRA_": {
+   "distanciaOsmM": 5,
+   "refsOsm": "BR-381",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 5,
+   "casasDecimais": 4,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 5 m"
+  },
+  "ANTT_MOTIVA_MINAS_SP_7_CARMOPOLIS_DE_MINAS_": {
+   "distanciaOsmM": 37,
+   "refsOsm": "BR-381",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 37,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 37 m"
+  },
+  "ANTT_MOTIVA_MINAS_SP_8_ITATIAIUCU_": {
+   "distanciaOsmM": 6,
+   "refsOsm": "BR-381",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 6,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 6 m"
+  },
+  "ANTT_MOTIVA_MINAS_SP_4_SAO_GONCALO_": {
+   "distanciaOsmM": 23,
+   "refsOsm": "BR-381",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 23,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 23 m"
+  },
+  "ANTT_MOTIVA_MINAS_SP_6_SANTO_ANTONIO_DO_AMPARO_": {
+   "distanciaOsmM": 20,
+   "refsOsm": "BR-381",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 20,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 20 m"
+  },
+  "ANTT_MOTIVA_MINAS_SP_1_NORTE_DEFASADA_MAIRIPORA_": {
+   "distanciaOsmM": 3,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 1266,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 3 m (via OSM sem ref)"
+  },
+  "ANTT_MOTIVA_MINAS_SP_1_NORTE_MAIRIPORA_": {
+   "distanciaOsmM": 5,
+   "refsOsm": "SP-010/BR-381",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 5,
+   "casasDecimais": 4,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 5 m"
+  },
+  "ANTT_MOTIVA_MINAS_SP_1_SUL_MAIRIPORA_": {
+   "distanciaOsmM": 66,
+   "refsOsm": "SP-010/BR-381",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 66,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 66 m"
+  },
+  "ANTT_MOTIVA_PARANA_FREE_FLOW_P2_MAUA_DA_SERRA": {
+   "distanciaOsmM": 18101,
+   "refsOsm": "BR-376",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 18101,
+   "casasDecimais": 5,
+   "classe": "SEM_VALIDACAO",
+   "motivo": "nenhum ponto OSM da BR-376 a menos de 10 km (o mais próximo, em BR-376, a 18.1 km) · free-flow recente costuma faltar no OSM"
+  },
+  "ANTT_MOTIVA_PARANA_FREE_FLOW_P7_LONDRINA": {
+   "distanciaOsmM": 18699,
+   "refsOsm": "BR-376",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "SEM_VALIDACAO",
+   "motivo": "nenhum ponto OSM da 445 a menos de 10 km (o mais próximo, em BR-376, a 18.7 km) · free-flow recente costuma faltar no OSM"
+  },
+  "ANTT_MOTIVA_PARANA_P03_ORTIGUEIRA": {
+   "distanciaOsmM": 3,
+   "refsOsm": "BR-376",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 3,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 3 m"
+  },
+  "ANTT_MOTIVA_PARANA_P04_IMBAU": {
+   "distanciaOsmM": 8,
+   "refsOsm": "BR-376",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 8,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 8 m"
+  },
+  "ANTT_MOTIVA_PARANA_P06_WITMARSUM": {
+   "distanciaOsmM": 16,
+   "refsOsm": "BR-376",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 16,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 16 m"
+  },
+  "ANTT_MOTIVA_PARANA_P01_SERTANEJA": {
+   "distanciaOsmM": 1,
+   "refsOsm": "PR-323",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 1,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 1 m"
+  },
+  "ANTT_MOTIVA_PARANA_P05_TIBAGI": {
+   "distanciaOsmM": 6,
+   "refsOsm": "BR-376",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 6,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 6 m"
+  },
+  "ANTT_NOVA_364_FREE_FLOW_ITAPUA_P02": {
+   "distanciaOsmM": 18,
+   "refsOsm": "BR-364",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 18,
+   "casasDecimais": 4,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 18 m"
+  },
+  "ANTT_NOVA_364_FREE_FLOW_PRES_MEDICI_P05": {
+   "distanciaOsmM": 14,
+   "refsOsm": "BR-364",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 14,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 14 m"
+  },
+  "ANTT_NOVA_364_FREE_FLOW_CANDEIAS_P01": {
+   "distanciaOsmM": 7,
+   "refsOsm": "BR-364",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 7,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 7 m"
+  },
+  "ANTT_NOVA_364_FREE_FLOW_OURO_PRETO_P04": {
+   "distanciaOsmM": 5,
+   "refsOsm": "BR-364",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 5,
+   "casasDecimais": 4,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 5 m"
+  },
+  "ANTT_NOVA_364_FREE_FLOW_PIMENTA_BUENO1_P06": {
+   "distanciaOsmM": 5,
+   "refsOsm": "BR-364",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 5,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 5 m"
+  },
+  "ANTT_NOVA_364_FREE_FLOW_PIMENTA_BUENO2_P07": {
+   "distanciaOsmM": 8,
+   "refsOsm": "BR-364",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 8,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 8 m"
+  },
+  "ANTT_NOVA_364_FREE_FLOW_JARU_P03": {
+   "distanciaOsmM": 21,
+   "refsOsm": "BR-364",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 21,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 21 m"
+  },
+  "ANTT_NOVA_381_FREE_FLOW_BELO_ORIENTE_P04": {
+   "distanciaOsmM": 121,
+   "refsOsm": "BR-381",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 121,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 121 m"
+  },
+  "ANTT_NOVA_381_FREE_FLOW_CAETE_P01": {
+   "distanciaOsmM": 1,
+   "refsOsm": "BR-381",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 1,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 1 m"
+  },
+  "ANTT_NOVA_381_FREE_FLOW_JAGUARACU_P03": {
+   "distanciaOsmM": 57,
+   "refsOsm": "BR-381",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 57,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 57 m"
+  },
+  "ANTT_NOVA_381_FREE_FLOW_JOAO_MONLEVADE_P02": {
+   "distanciaOsmM": 5,
+   "refsOsm": "BR-381",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 5,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 5 m"
+  },
+  "ANTT_NOVA_381_FREE_FLOW_GOVERNADOR_VALADARES_P05": {
+   "distanciaOsmM": 72,
+   "refsOsm": "BR-381",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 72,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 72 m"
+  },
+  "ANTT_NOVA_ROTA_DO_OESTE_P3": {
+   "distanciaOsmM": 226,
+   "refsOsm": "BR-163/BR-364",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 226,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 226 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_NOVA_ROTA_DO_OESTE_P1": {
+   "distanciaOsmM": 7,
+   "refsOsm": "BR-163",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 7,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 7 m"
+  },
+  "ANTT_NOVA_ROTA_DO_OESTE_P5": {
+   "distanciaOsmM": 1,
+   "refsOsm": "BR-163/BR-364",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 1,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 1 m"
+  },
+  "ANTT_NOVA_ROTA_DO_OESTE_P8": {
+   "distanciaOsmM": 5,
+   "refsOsm": "BR-163",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 5,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 5 m"
+  },
+  "ANTT_NOVA_ROTA_DO_OESTE_P6": {
+   "distanciaOsmM": 5,
+   "refsOsm": "BR-163/BR-364/MT-010",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 5,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 5 m"
+  },
+  "ANTT_NOVA_ROTA_DO_OESTE_P7": {
+   "distanciaOsmM": 12,
+   "refsOsm": "BR-163",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 12,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 12 m"
+  },
+  "ANTT_NOVA_ROTA_DO_OESTE_P2": {
+   "distanciaOsmM": 6,
+   "refsOsm": "BR-163/BR-364",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 6,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 6 m"
+  },
+  "ANTT_NOVA_ROTA_DO_OESTE_P4": {
+   "distanciaOsmM": 10,
+   "refsOsm": "BR-070/BR-163/BR-364",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 10,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 10 m"
+  },
+  "ANTT_NOVA_ROTA_DO_OESTE_P9": {
+   "distanciaOsmM": 9,
+   "refsOsm": "BR-163",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 9,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 9 m"
+  },
+  "ANTT_PANTANAL_P3_CAARAPO": {
+   "distanciaOsmM": 5,
+   "refsOsm": "BR-163",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 5,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 5 m"
+  },
+  "ANTT_PANTANAL_P5_CAMPO_GRANDE": {
+   "distanciaOsmM": 12,
+   "refsOsm": "BR-163",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 12,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 12 m"
+  },
+  "ANTT_PANTANAL_P2_ITAQUIRAI": {
+   "distanciaOsmM": 13,
+   "refsOsm": "BR-163/BR-487",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 13,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 13 m"
+  },
+  "ANTT_PANTANAL_P6_JARAGUARI": {
+   "distanciaOsmM": 291,
+   "refsOsm": "BR-163/BR-060",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 291,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 291 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_PANTANAL_P1_MUNDO_NOVO": {
+   "distanciaOsmM": 7,
+   "refsOsm": "BR-163",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 7,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 7 m"
+  },
+  "ANTT_PANTANAL_P4_RIO_BRILHANTE": {
+   "distanciaOsmM": 6,
+   "refsOsm": "BR-163",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 6,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 6 m"
+  },
+  "ANTT_PANTANAL_P8_RIO_VERDE": {
+   "distanciaOsmM": 1,
+   "refsOsm": "BR-163",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 1,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 1 m"
+  },
+  "ANTT_PANTANAL_P7_SAO_GABRIEL": {
+   "distanciaOsmM": 7,
+   "refsOsm": "BR-163",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 7,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 7 m"
+  },
+  "ANTT_PANTANAL_P9_SONORA": {
+   "distanciaOsmM": 164,
+   "refsOsm": "BR-163",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 164,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 164 m"
+  },
+  "ANTT_RODOVIA_DO_ACO_SAPUCAIA": {
+   "distanciaOsmM": 7,
+   "refsOsm": "BR-393",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 7,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 7 m"
+  },
+  "ANTT_RODOVIA_DO_ACO_PARAIBA_DO_SUL": {
+   "distanciaOsmM": 6,
+   "refsOsm": "BR-393",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 6,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 6 m"
+  },
+  "ANTT_RODOVIA_DO_ACO_BARRA_DA_PIRAI": {
+   "distanciaOsmM": 7,
+   "refsOsm": "BR-393",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 7,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 7 m"
+  },
+  "ANTT_ROTA_VERDE_GOIAS_FREE_FLOW_BOM_JESUS_DE_GOIAS_P06": {
+   "distanciaOsmM": 85575,
+   "refsOsm": "BR-153",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "SEM_VALIDACAO",
+   "motivo": "nenhum ponto OSM da BR-452 a menos de 10 km (o mais próximo, em BR-153, a 85.6 km) · free-flow recente costuma faltar no OSM"
+  },
+  "ANTT_ROTA_VERDE_GOIAS_FREE_FLOW_BOM_JESUS_DE_GOIAS_P07": {
+   "distanciaOsmM": 40712,
+   "refsOsm": "BR-153",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "SEM_VALIDACAO",
+   "motivo": "nenhum ponto OSM da BR-452 a menos de 10 km (o mais próximo, em BR-153, a 40.7 km) · free-flow recente costuma faltar no OSM"
+  },
+  "ANTT_ROTA_VERDE_GOIAS_FREE_FLOW_ABADIA_DE_GOIAS_P01A": {
+   "distanciaOsmM": 113,
+   "refsOsm": "BR-060",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 113,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 113 m"
+  },
+  "ANTT_ROTA_VERDE_GOIAS_FREE_FLOW_ABADIA_DE_GOIAS_P01B": {
+   "distanciaOsmM": 10256,
+   "refsOsm": "BR-060",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 10256,
+   "casasDecimais": 5,
+   "classe": "SEM_VALIDACAO",
+   "motivo": "nenhum ponto OSM da BR-60 a menos de 10 km (o mais próximo, em BR-060, a 10.3 km) · free-flow recente costuma faltar no OSM"
+  },
+  "ANTT_ROTA_VERDE_GOIAS_FREE_FLOW_ACREUNA_P04A": {
+   "distanciaOsmM": 119261,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "SEM_VALIDACAO",
+   "motivo": "nenhum ponto OSM da BR-60 a menos de 10 km · free-flow recente costuma faltar no OSM"
+  },
+  "ANTT_ROTA_VERDE_GOIAS_FREE_FLOW_ACREUNA_P04B": {
+   "distanciaOsmM": 119310,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 4,
+   "classe": "SEM_VALIDACAO",
+   "motivo": "nenhum ponto OSM da BR-60 a menos de 10 km · free-flow recente costuma faltar no OSM"
+  },
+  "ANTT_ROTA_VERDE_GOIAS_FREE_FLOW_INDIARA_P02A": {
+   "distanciaOsmM": 57742,
+   "refsOsm": "BR-060",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "SEM_VALIDACAO",
+   "motivo": "nenhum ponto OSM da BR-60 a menos de 10 km (o mais próximo, em BR-060, a 57.7 km) · free-flow recente costuma faltar no OSM"
+  },
+  "ANTT_ROTA_VERDE_GOIAS_FREE_FLOW_INDIARA_P02B": {
+   "distanciaOsmM": 57769,
+   "refsOsm": "BR-060",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "SEM_VALIDACAO",
+   "motivo": "nenhum ponto OSM da BR-60 a menos de 10 km (o mais próximo, em BR-060, a 57.8 km) · free-flow recente costuma faltar no OSM"
+  },
+  "ANTT_ROTA_VERDE_GOIAS_FREE_FLOW_JANDAIA_P03A": {
+   "distanciaOsmM": 103233,
+   "refsOsm": "BR-060",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "SEM_VALIDACAO",
+   "motivo": "nenhum ponto OSM da BR-60 a menos de 10 km (o mais próximo, em BR-060, a 103.2 km) · free-flow recente costuma faltar no OSM"
+  },
+  "ANTT_ROTA_VERDE_GOIAS_FREE_FLOW_JANDAIA_P03B": {
+   "distanciaOsmM": 103245,
+   "refsOsm": "BR-060",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "SEM_VALIDACAO",
+   "motivo": "nenhum ponto OSM da BR-60 a menos de 10 km (o mais próximo, em BR-060, a 103.2 km) · free-flow recente costuma faltar no OSM"
+  },
+  "ANTT_ROTA_VERDE_GOIAS_FREE_FLOW_SANTA_HELENA_DE_GOIAS_P05": {
+   "distanciaOsmM": 83398,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "SEM_VALIDACAO",
+   "motivo": "nenhum ponto OSM da BR-452 a menos de 10 km · free-flow recente costuma faltar no OSM"
+  },
+  "ANTT_TRANSBRASILIANA_P_01": {
+   "distanciaOsmM": 114,
+   "refsOsm": "BR-153/BR-262",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 114,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 114 m"
+  },
+  "ANTT_TRANSBRASILIANA_P_04": {
+   "distanciaOsmM": 14,
+   "refsOsm": "BR-153",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 14,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 14 m"
+  },
+  "ANTT_TRANSBRASILIANA_P_03": {
+   "distanciaOsmM": 56,
+   "refsOsm": "BR-153/BR-267",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 56,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 56 m"
+  },
+  "ANTT_TRANSBRASILIANA_P_02": {
+   "distanciaOsmM": 30,
+   "refsOsm": "BR-153",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 30,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 30 m"
+  },
+  "ANTT_VIA_ARAUCARIA_P01_SAO_LUIZ_DO_PURUNA": {
+   "distanciaOsmM": 254,
+   "refsOsm": "BR-277",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 254,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 254 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_VIA_ARAUCARIA_P02_PORTO_AMAZONAS": {
+   "distanciaOsmM": 445,
+   "refsOsm": "BR-277",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 445,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 445 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_VIA_ARAUCARIA_P05_LAPA": {
+   "distanciaOsmM": 3,
+   "refsOsm": "BR-476",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 3,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 3 m"
+  },
+  "ANTT_VIA_ARAUCARIA_P04_IMBITUVA": {
+   "distanciaOsmM": 431,
+   "refsOsm": "BR-373",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 431,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 431 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_VIA_ARAUCARIA_P03_IRATI": {
+   "distanciaOsmM": 558,
+   "refsOsm": "BR-277",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 558,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 558 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_VIA_BRASIL_P1_CLAUDIA": {
+   "distanciaOsmM": 110,
+   "refsOsm": "BR-163",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 110,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 110 m"
+  },
+  "ANTT_VIA_BRASIL_P2_GUARANTA_DO_NORTE": {
+   "distanciaOsmM": 12927,
+   "refsOsm": "BR-163",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 12927,
+   "casasDecimais": 5,
+   "classe": "SEM_VALIDACAO",
+   "motivo": "nenhum ponto OSM da BR-163 a menos de 10 km (o mais próximo, em BR-163, a 12.9 km)"
+  },
+  "ANTT_VIA_BRASIL_P3_TRAIRAO": {
+   "distanciaOsmM": 6919,
+   "refsOsm": "BR-163",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 6919,
+   "casasDecimais": 5,
+   "classe": "AMBIGUA",
+   "motivo": "ponto OSM mais próximo da BR-163 a 6.9 km — não coincide com a coordenada oficial"
+  },
+  "ANTT_VIA_CAMPO_P02_MAMBORE": {
+   "distanciaOsmM": 1,
+   "refsOsm": "BR-369",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 1,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 1 m"
+  },
+  "ANTT_VIA_CAMPO_P03_CORBELIA": {
+   "distanciaOsmM": 4,
+   "refsOsm": "BR-369",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 4 m"
+  },
+  "ANTT_VIA_CAMPO_P01_FLORESTA": {
+   "distanciaOsmM": 3,
+   "refsOsm": "PR-317",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 3,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 3 m"
+  },
+  "ANTT_VIA_COSTEIRA_P1_LAGUNA": {
+   "distanciaOsmM": 11,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 11,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 11 m"
+  },
+  "ANTT_VIA_COSTEIRA_P3_ARARANGUA": {
+   "distanciaOsmM": 9,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 9,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 9 m"
+  },
+  "ANTT_VIA_COSTEIRA_P4_SAO_JOAO_DO_SUL": {
+   "distanciaOsmM": 6,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 6,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 6 m"
+  },
+  "ANTT_VIA_COSTEIRA_P2_TUBARAO": {
+   "distanciaOsmM": 7,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 7,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 7 m"
+  },
+  "ANTT_VIA_CRISTAIS_P7_CAPIM_BRANCO": {
+   "distanciaOsmM": 17,
+   "refsOsm": "BR-040/BR-135",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 17,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 17 m"
+  },
+  "ANTT_VIA_CRISTAIS_P6_CURVELO": {
+   "distanciaOsmM": 9,
+   "refsOsm": "BR-040",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 9,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 9 m"
+  },
+  "ANTT_VIA_CRISTAIS_P5_FELIXLANDIA": {
+   "distanciaOsmM": 7,
+   "refsOsm": "BR-040",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 7,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 7 m"
+  },
+  "ANTT_VIA_CRISTAIS_P3_JOAO_PINHEIRO": {
+   "distanciaOsmM": 23,
+   "refsOsm": "BR-040",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 23,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 23 m"
+  },
+  "ANTT_VIA_CRISTAIS_P2_LAGOA_GRANDE": {
+   "distanciaOsmM": 10,
+   "refsOsm": "BR-040",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 10,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 10 m"
+  },
+  "ANTT_VIA_CRISTAIS_P1_PARACATU": {
+   "distanciaOsmM": 7,
+   "refsOsm": "BR-040",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 7,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 7 m"
+  },
+  "ANTT_VIA_CRISTAIS_P4_SAO_GONCALO_DO_ABAETE": {
+   "distanciaOsmM": 7,
+   "refsOsm": "BR-040",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 7,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 7 m"
+  },
+  "ANTT_VIA_SUL_P2_SANTO_ANTONIO_DA_PATRULHA": {
+   "distanciaOsmM": 15,
+   "refsOsm": "BR-290",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 15,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 15 m"
+  },
+  "ANTT_VIA_SUL_P1_TRES_CACHOEIRAS": {
+   "distanciaOsmM": 27,
+   "refsOsm": "BR-101",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 27,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 27 m"
+  },
+  "ANTT_VIA_SUL_P7_VICTOR_GRAEFF": {
+   "distanciaOsmM": 801,
+   "refsOsm": "BR-386",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 801,
+   "casasDecimais": 5,
+   "classe": "AMBIGUA",
+   "motivo": "ponto OSM mais próximo da BR-386 a 0.8 km — não coincide com a coordenada oficial"
+  },
+  "ANTT_VIA_SUL_P6_FONTOURA_XAVIER": {
+   "distanciaOsmM": 270,
+   "refsOsm": "BR-386",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 270,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 270 m"
+  },
+  "ANTT_VIA_SUL_P3_GRAVATAI": {
+   "distanciaOsmM": 14,
+   "refsOsm": "BR-290",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 14,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 14 m"
+  },
+  "ANTT_VIA_SUL_P4_MONTENEGRO": {
+   "distanciaOsmM": 97,
+   "refsOsm": "BR-386",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 97,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 97 m"
+  },
+  "ANTT_VIA_SUL_P5_PAVERAMA": {
+   "distanciaOsmM": 525,
+   "refsOsm": "BR-386",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 525,
+   "casasDecimais": 5,
+   "classe": "AMBIGUA",
+   "motivo": "ponto OSM mais próximo da BR-386 a 0.5 km — não coincide com a coordenada oficial"
+  },
+  "ANTT_WAY_153_PRACA_01_PIRACANJUBA": {
+   "distanciaOsmM": 1,
+   "refsOsm": "BR-153",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 1,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 1 m"
+  },
+  "ANTT_WAY_153_PRACA_02_ITUMBIARA": {
+   "distanciaOsmM": 17,
+   "refsOsm": "BR-153",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 17,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 17 m"
+  },
+  "ANTT_WAY_153_PRACA_03_PRATA": {
+   "distanciaOsmM": 16,
+   "refsOsm": "BR-153",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 16,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 16 m"
+  },
+  "ANTT_WAY_153_PRACA_04_FRONTEIRA": {
+   "distanciaOsmM": 43,
+   "refsOsm": "BR-153/BR-262",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 43,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 43 m"
+  },
+  "ANTT_WAY_153_PRACA_05_CAMPO_FLORIDO": {
+   "distanciaOsmM": 7,
+   "refsOsm": "BR-262",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 7,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 7 m"
+  },
+  "ANTT_WAY_262_PRACA_04_CAMPOS_ALTOS": {
+   "distanciaOsmM": 2,
+   "refsOsm": "BR-262",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 2,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 2 m"
+  },
+  "ANTT_WAY_262_PRACA_05_IBIA_FREE_FLOW": {
+   "distanciaOsmM": 51318,
+   "refsOsm": "BR-452",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "SEM_VALIDACAO",
+   "motivo": "nenhum ponto OSM da BR-262 a menos de 10 km (o mais próximo, em BR-452, a 51.3 km) · free-flow recente costuma faltar no OSM"
+  },
+  "ANTT_WAY_262_PRACA_01_FLORESTAL": {
+   "distanciaOsmM": 13,
+   "refsOsm": "BR-262",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 13,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 13 m"
+  },
+  "ANTT_WAY_262_PRACA_03_LUZ": {
+   "distanciaOsmM": 4,
+   "refsOsm": "BR-262",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 4 m"
+  },
+  "ANTT_WAY_262_PRACA_06_PERDIZES": {
+   "distanciaOsmM": 6,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 6 m (via OSM sem ref)"
+  },
+  "ANTT_WAY_262_PRACA_02_NOVA_SERRANA_FREE_FLOW": {
+   "distanciaOsmM": 43521,
+   "refsOsm": "MG-050",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": null,
+   "casasDecimais": 5,
+   "classe": "SEM_VALIDACAO",
+   "motivo": "nenhum ponto OSM da BR-262 a menos de 10 km (o mais próximo, em MG-050, a 43.5 km) · free-flow recente costuma faltar no OSM"
+  },
+  "ANTT_RIOSP_MOREIRA_CESAR_NORTE": {
+   "distanciaOsmM": 91,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 91,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 91 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_RIOSP_MOREIRA_CESAR_SUL": {
+   "distanciaOsmM": 91,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 91,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 91 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_RIOSP_GUARAREMA_NORTE": {
+   "distanciaOsmM": 636,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 636,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 636 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_RIOSP_FREE_FLOW_ITAGUAI": {
+   "distanciaOsmM": 805,
+   "refsOsm": "BR-101",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 805,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 805 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_RIOSP_ITATIAIA_NORTE": {
+   "distanciaOsmM": 531,
+   "refsOsm": "BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 531,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 531 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_RIOSP_ITATIAIA_SUL": {
+   "distanciaOsmM": 531,
+   "refsOsm": "BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 531,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 531 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_RIOSP_FREE_FLOW_MANGARATIBA": {
+   "distanciaOsmM": 102,
+   "refsOsm": "BR-101",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 102,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 102 m"
+  },
+  "ANTT_RIOSP_ARUJA_RODOANEL": {
+   "distanciaOsmM": 705,
+   "refsOsm": null,
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 716,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 705 m (via OSM sem ref) · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_RIOSP_ARUJA_NORTE": {
+   "distanciaOsmM": 340,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 340,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 340 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_RIOSP_ARUJA_SUL": {
+   "distanciaOsmM": 340,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 340,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 340 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PARATY": {
+   "distanciaOsmM": 434,
+   "refsOsm": "BR-101",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 434,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 434 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_RIOSP_VIUVA_GRACA_NORTE": {
+   "distanciaOsmM": 7,
+   "refsOsm": "BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 7,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 7 m"
+  },
+  "ANTT_RIOSP_VIUVINHA_NORTE": {
+   "distanciaOsmM": 3,
+   "refsOsm": "BR-465",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 1390,
+   "casasDecimais": 5,
+   "classe": "AMBIGUA",
+   "motivo": "cabine OSM a 3 m, mas na via BR-465 — não na BR-116; o ponto da BR-116 mais próximo fica a 1390 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE004_PFS003_SUL": {
+   "distanciaOsmM": 30,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 30,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 30 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE004_PFS004_SUL": {
+   "distanciaOsmM": 30,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 30,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 30 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE004_PFS005_SUL": {
+   "distanciaOsmM": 30,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 30,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 30 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE005_BAIRRO_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE005_PEDARD_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE005_PEDARU_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE005_PFS006_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE005_PFS007_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE005_PFS008_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE005_PFS009_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE005_PFS010_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE006_BAIRRO_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE006_PEDARD_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE006_PEDARU_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE006_PFS006_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE006_PFS007_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE006_PFS008_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE006_PFS009_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE006_PFS010_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_GUARAREMA_SUL": {
+   "distanciaOsmM": 122,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 122,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 122 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PPF001_SUL_PFS001_SUL": {
+   "distanciaOsmM": 8,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 8,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 8 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PPF001_SUL_PFS002_SUL": {
+   "distanciaOsmM": 8,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 8,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 8 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PPF001_SUL_PFS003_SUL": {
+   "distanciaOsmM": 8,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 8,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 8 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PPF001_SUL_PFS004_SUL": {
+   "distanciaOsmM": 8,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 8,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 8 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PPF001_SUL_PFS005_SUL": {
+   "distanciaOsmM": 8,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 8,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 8 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE001_PFS001_SUL": {
+   "distanciaOsmM": 32,
+   "refsOsm": null,
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 2534,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 32 m (via OSM sem ref)"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE001_PFS002_SUL": {
+   "distanciaOsmM": 32,
+   "refsOsm": null,
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 2534,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 32 m (via OSM sem ref)"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE001_PFS003_SUL": {
+   "distanciaOsmM": 32,
+   "refsOsm": null,
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 2534,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 32 m (via OSM sem ref)"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE001_PFS004_SUL": {
+   "distanciaOsmM": 32,
+   "refsOsm": null,
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 2534,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 32 m (via OSM sem ref)"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE001_PFS005_SUL": {
+   "distanciaOsmM": 32,
+   "refsOsm": null,
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 2534,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 32 m (via OSM sem ref)"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE002_PFS002_SUL": {
+   "distanciaOsmM": 6,
+   "refsOsm": null,
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 1144,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 6 m (via OSM sem ref)"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE002_PFS003_SUL": {
+   "distanciaOsmM": 6,
+   "refsOsm": null,
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 1144,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 6 m (via OSM sem ref)"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE002_PFS004_SUL": {
+   "distanciaOsmM": 6,
+   "refsOsm": null,
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 1144,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 6 m (via OSM sem ref)"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE002_PFS005_SUL": {
+   "distanciaOsmM": 6,
+   "refsOsm": null,
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 1144,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 6 m (via OSM sem ref)"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE003_PFS002_SUL": {
+   "distanciaOsmM": 3,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 3,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 3 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE003_PFS003_SUL": {
+   "distanciaOsmM": 3,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 3,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 3 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE003_PFS004_SUL": {
+   "distanciaOsmM": 3,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 3,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 3 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE003_PFS005_SUL": {
+   "distanciaOsmM": 3,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 3,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 3 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE007_BAIRRO_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE007_PEDARD_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE007_PEDARU_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE007_PFS008_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE007_PFS009_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE007_PFS010_NORTE": {
+   "distanciaOsmM": 4,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4,
+   "casasDecimais": 5,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "pórtico OSM a 4 m"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE008_BAIRRO_NORTE": {
+   "distanciaOsmM": 1528,
+   "refsOsm": null,
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4031,
+   "casasDecimais": 5,
+   "classe": "AMBIGUA",
+   "motivo": "ponto OSM mais próximo da BR-116 a 4.0 km — não coincide com a coordenada oficial"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE008_PEDARD_NORTE": {
+   "distanciaOsmM": 1528,
+   "refsOsm": null,
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4031,
+   "casasDecimais": 5,
+   "classe": "AMBIGUA",
+   "motivo": "ponto OSM mais próximo da BR-116 a 4.0 km — não coincide com a coordenada oficial"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE008_PEDARU_NORTE": {
+   "distanciaOsmM": 1528,
+   "refsOsm": null,
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4031,
+   "casasDecimais": 5,
+   "classe": "AMBIGUA",
+   "motivo": "ponto OSM mais próximo da BR-116 a 4.0 km — não coincide com a coordenada oficial"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE008_PFS010_NORTE": {
+   "distanciaOsmM": 1528,
+   "refsOsm": null,
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 4031,
+   "casasDecimais": 5,
+   "classe": "AMBIGUA",
+   "motivo": "ponto OSM mais próximo da BR-116 a 4.0 km — não coincide com a coordenada oficial"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE009_BAIRRO_NORTE": {
+   "distanciaOsmM": 976,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 976,
+   "casasDecimais": 5,
+   "classe": "AMBIGUA",
+   "motivo": "ponto OSM mais próximo da BR-116 a 1.0 km — não coincide com a coordenada oficial"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE009_PEDARD_NORTE": {
+   "distanciaOsmM": 976,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 976,
+   "casasDecimais": 5,
+   "classe": "AMBIGUA",
+   "motivo": "ponto OSM mais próximo da BR-116 a 1.0 km — não coincide com a coordenada oficial"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE009_PEDARU_NORTE": {
+   "distanciaOsmM": 976,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 976,
+   "casasDecimais": 5,
+   "classe": "AMBIGUA",
+   "motivo": "ponto OSM mais próximo da BR-116 a 1.0 km — não coincide com a coordenada oficial"
+  },
+  "ANTT_RIOSP_FREE_FLOW_PFE009_PFS010_NORTE": {
+   "distanciaOsmM": 976,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "pórtico",
+   "distanciaMesmaRodoviaM": 976,
+   "casasDecimais": 5,
+   "classe": "AMBIGUA",
+   "motivo": "ponto OSM mais próximo da BR-116 a 1.0 km — não coincide com a coordenada oficial"
+  },
+  "ANTT_RIOSP_JACAREI_NORTE": {
+   "distanciaOsmM": 462,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 462,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 462 m · coordenada publicada com 2 casas decimais"
+  },
+  "ANTT_RIOSP_JACAREI_SUL": {
+   "distanciaOsmM": 462,
+   "refsOsm": "SP-060/BR-116",
+   "tipoOsm": "cabine",
+   "distanciaMesmaRodoviaM": 462,
+   "casasDecimais": 2,
+   "classe": "COORDENADA_OFICIAL_VALIDADA",
+   "motivo": "cabine OSM a 462 m · coordenada publicada com 2 casas decimais"
+  }
+ }
+}
