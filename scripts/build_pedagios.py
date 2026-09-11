@@ -42,6 +42,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 ARQ = os.path.join(RAIZ, "data", "pedagios_brasil.json")
 ARQ_MUN = os.path.join(RAIZ, "data", "municipios_brasil.json")
+# Praças que ESTÃO no documento oficial da ARTESP mas que o leitor do PDF não
+# consegue ler (linha quebrada, "SP- 065" com espaço, "CAIEIRAS *", anexo da
+# ViaPaulista). Curadas à mão, com a linha do documento citada em cada uma.
+ARQ_COMPL = os.path.join(RAIZ, "data", "pedagios_complemento_artesp.json")
 
 import pedagios_providers as P   # noqa: E402
 
@@ -81,6 +85,14 @@ def carregar_municipios_sp():
 
 
 def geocodificar_sp(nome, indice):
+    """Devolve a SEDE DO MUNICÍPIO homônimo da praça — NÃO a praça.
+
+    A ARTESP não publica coordenada. Esta posição fica, em média, 7 km fora da
+    rodovia (Presidente Bernardes: 3.473 m do traçado; Caiuá: 2.510 m) e foi a
+    causa-raiz de PP→Epitácio sair com zero pedágios. Por isso o registro sai
+    marcado com origemCoordenada = CENTROIDE_MUNICIPAL e posicionavel = False:
+    o painel usa este ponto só como REGIÃO para levantar pendência, nunca para
+    contar. A posição física vem de data/pedagios_coordenadas.json."""
     n = maiusc(nome).replace("(BLOQUEIO)", "").strip()
     n = ALIAS_SP.get(n, n)
     m = indice.get(n)
@@ -92,7 +104,9 @@ def enriquecer(pracas):
     com a geometria da rota. As 12 rampas do Rodoanel não têm — existem, mas
     não podem ser contadas automaticamente."""
     for p in pracas:
-        p["posicionavel"] = p.get("latitude") is not None and p.get("longitude") is not None
+        # Centroide municipal não é posição de praça: não casa com geometria.
+        p["posicionavel"] = (p.get("latitude") is not None and p.get("longitude") is not None
+                             and p.get("origemCoordenada") != "CENTROIDE_MUNICIPAL")
         if p.get("sentido") in (None, ""):
             p["sentido"] = None
     return pracas
@@ -128,6 +142,7 @@ def montar_antt(diag):
         "tipo": x["tipo"], "rodovia": x["rodovia"], "uf": x["uf"], "km": x["km"],
         "municipio": x["municipio"],
         "latitude": x["latitude"], "longitude": x["longitude"],
+        "origemCoordenada": "OFICIAL_ANTT",
         "sentido": x["sentido"],
         "situacao": "ativo",
     } for x in locais]
@@ -148,11 +163,41 @@ def montar_artesp(diag):
             "regulador": "ARTESP", "concessionaria": None, "nome": x["nome"],
             "tipo": x["tipo"], "rodovia": x["rodovia"], "uf": "SP", "km": x["km"],
             "latitude": la, "longitude": lo, "codigoIbgeMunicipio": ibge,
+            "origemCoordenada": "CENTROIDE_MUNICIPAL" if la is not None else "SEM_COORDENADA",
             "sentido": x["sentido"], "cobranca": x["cobranca"],
             "situacao": "ativo",
         })
     diag["artesp_sem_geocodificacao"] = sem_geo
     return out
+
+def _km_num(v):
+    m = re.match(r"^\s*(\d+)\s*\+\s*(\d+)\s*$", str(v or ""))
+    if m:
+        return round(int(m.group(1)) + int(m.group(2)) / 1000.0, 3)
+    try:
+        return round(float(str(v).replace(",", ".")), 3)
+    except (TypeError, ValueError):
+        return None
+
+
+def complementar_artesp(artesp, diag):
+    """Acrescenta as praças de data/pedagios_complemento_artesp.json que o
+    leitor do PDF não trouxe. Nunca duplica: um registro do complemento só
+    entra se nem o id nem a dupla rodovia + km já existirem. Se um dia o
+    leitor aprender a ler a linha, a praça dele prevalece e a do complemento
+    deixa de entrar sozinha."""
+    if not os.path.exists(ARQ_COMPL):
+        return artesp
+    with open(ARQ_COMPL, encoding="utf-8") as f:
+        extra = json.load(f).get("pracas") or []
+    ids = {p.get("id") for p in artesp}
+    chaves = {(re.sub(r"\s+", "", p.get("rodovia") or "").upper(), _km_num(p.get("km"))) for p in artesp}
+    novos = [dict(p) for p in extra
+             if p.get("id") not in ids
+             and (re.sub(r"\s+", "", p.get("rodovia") or "").upper(), _km_num(p.get("km"))) not in chaves]
+    diag["artesp_complemento"] = {"no_arquivo": len(extra), "acrescentados": len(novos)}
+    return artesp + novos
+
 
 def validar(pracas, rotulo):
     if not pracas:
@@ -221,7 +266,8 @@ def main():
         except Exception as e:
             diag["artesp_falhou"] = str(e)[:200]
             cov_artesp = "fonte_indisponivel"
-    print(f"ARTESP : {len(artesp)} praças · {cov_artesp}")
+    artesp = complementar_artesp(artesp, diag)
+    print(f"ARTESP : {len(artesp)} praças · {cov_artesp} · complemento: {diag.get('artesp_complemento')}")
 
     if not antt and not artesp:
         print("Nenhum provider entregou dados e não há base anterior. Nada gravado.")
