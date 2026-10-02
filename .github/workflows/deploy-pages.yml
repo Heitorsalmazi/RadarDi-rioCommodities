@@ -1,0 +1,148 @@
+name: Publica o Radar no GitHub Pages
+
+# POR QUE ESTE ARQUIVO EXISTE
+# ────────────────────────────────────────────────────────────────────────
+# Em Settings → Pages a origem do site é "GitHub Actions". Nesse modo o
+# GitHub NÃO publica nada sozinho: quem publica é este workflow. Sem ele o
+# site congela no último deploy e nada avisa — foi exatamente o que
+# aconteceu entre 30/09 e 02/10/2026.
+#
+# A ARMADILHA QUE ESTE ARQUIVO CONTORNA
+# ────────────────────────────────────────────────────────────────────────
+# Os cinco workflows de dados commitam usando o GITHUB_TOKEN padrão. O
+# GitHub, de propósito, NÃO dispara workflows a partir de push feito com
+# esse token (é a proteção contra loop infinito). Ou seja: `on: push`
+# sozinho nunca veria os commits do github-actions[bot] — o site só
+# atualizaria quando o Heitor subisse arquivo na mão.
+# Por isso o gatilho principal é `workflow_run`: ele observa o TÉRMINO dos
+# cinco workflows de dados, e esse mecanismo não sofre a restrição acima.
+#
+# AS QUATRO CAMADAS DE GATILHO (se uma falhar, as outras seguram)
+#   1. workflow_run  — reage aos cinco robôs de dados
+#   2. push          — reage a upload manual de index.html pela web
+#   3. schedule      — rede de segurança diária, caso 1 e 2 falhem
+#   4. workflow_dispatch — botão "Run workflow" para forçar na hora
+#
+# POR QUE TEM UM JOB SÓ DE VERIFICAÇÃO
+# ────────────────────────────────────────────────────────────────────────
+# `Sync Excel Data` roda a cada 20 min (72x/dia) e quase sempre termina
+# sem commitar. Publicar 72 vezes o mesmo conteúdo queimaria o limite de
+# builds/hora do Pages à toa. O job `verificar` compara o HEAD do main com
+# o SHA do último deploy publicado: se forem iguais, não publica. Custa
+# ~15s e evita um deploy de ~15 MB.
+
+on:
+  push:
+    branches: [main]
+  workflow_run:
+    workflows:
+      - "Sync Excel Data"
+      - "Atualiza base de opções"
+      - "Atualiza base de pedágios"
+      - "Atualiza coeficientes da ANTT"
+      - "Atualiza matriz logística"
+    types: [completed]
+  schedule:
+    - cron: '35 9 * * *'   # 06:35 BRT — rede de segurança diária
+  workflow_dispatch:
+
+# Permissões mínimas. `pages` e `id-token` são exigidas pelo deploy-pages;
+# `deployments: read` é o que deixa o job de verificação ler qual SHA está
+# publicado hoje.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  deployments: read
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      publicar: ${{ steps.c.outputs.publicar }}
+    steps:
+      - name: Checkout da ponta do main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: O main já está publicado?
+        id: c
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          HEAD_SHA="$(git rev-parse HEAD)"
+          PUBLICADO="$(gh api \
+            "repos/${GITHUB_REPOSITORY}/deployments?environment=github-pages&per_page=1" \
+            --jq '.[0].sha // ""' 2>/dev/null || echo '')"
+
+          echo "HEAD do main : ${HEAD_SHA}"
+          echo "No ar agora  : ${PUBLICADO:-nenhum deploy encontrado}"
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Execução manual — publica de qualquer jeito."
+            echo "publicar=true" >> "$GITHUB_OUTPUT"
+          elif [ -n "${PUBLICADO}" ] && [ "${HEAD_SHA}" = "${PUBLICADO}" ]; then
+            echo "::notice::Nada mudou desde o último deploy. Pulando."
+            echo "publicar=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "publicar=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  publicar:
+    needs: verificar
+    if: needs.verificar.outputs.publicar == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    # Nunca dois deploys ao mesmo tempo. `cancel-in-progress: false` porque
+    # cancelar um deploy no meio pode deixar o site num estado quebrado —
+    # é melhor enfileirar.
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - name: Checkout da ponta do main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      # Trava de segurança: publicar um repositório sem index.html deixaria
+      # o Radar fora do ar com deploy "verde". Melhor falhar alto.
+      - name: Conferir os arquivos que o Radar precisa
+        run: |
+          set -e
+          faltou=0
+          for f in index.html dados.xlsx; do
+            if [ -f "$f" ]; then
+              printf 'ok   %-14s %s bytes\n' "$f" "$(stat -c%s "$f")"
+            else
+              echo "::error::$f não está na raiz do repositório."
+              faltou=1
+            fi
+          done
+          [ "$faltou" -eq 0 ]
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      # `path: .` publica o repositório inteiro, igual ao que o modo
+      # "Deploy from a branch" fazia. A própria action já exclui .git e
+      # .github do pacote. E, diferente do modo antigo, aqui o Jekyll nem
+      # roda — nada de arquivo sumir por começar com "_".
+      - name: Empacotar o site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Publicar
+        id: deploy
+        uses: actions/deploy-pages@v4
