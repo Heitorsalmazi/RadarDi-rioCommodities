@@ -9048,6 +9048,49 @@ header{
   </section>
 
   <section class="card">
+    <div class="card-title"><span class="card-title-text">BOI — Resultado em Dinheiro por Vencimento</span><button type="button" class="info-btn" aria-label="Ajuda: resultado em dinheiro por vencimento" data-tooltip="Traduz as margens em R$/@ do card acima para reais por cabeça e por lote, e mostra quanto esse dinheiro rende sobre o capital parado no animal. Mesmo motor, mesmos parâmetros do cenário.">ⓘ</button></div>
+      <div class="pill">A mesma conta do card acima, em reais por animal — e quanto isso rende sobre o capital.</div>
+    <div class="explain">
+      <span class="ex-tag">Para que serve</span>
+      R$ 27/@ não decidem nada até virarem <b>R$ 27 × 20 @ = R$ 540 por cabeça</b>. Este card faz essa
+      multiplicação em cada vencimento e acrescenta a pergunta que falta: <b>sobre quanto dinheiro
+      parado</b> esses R$ 540 foram ganhos, e em quantos dias.
+    </div>
+    <div class="explain">
+      <span class="ex-tag">Como ler</span>
+      <b>Barras, em cima.</b> Âmbar é a margem da engorda; roxa é o lucro líquido do ciclo inteiro. São
+      as mesmas duas contas do card acima, agora em reais. A diferença entre elas está aberta linha por
+      linha na leitura, logo abaixo do gráfico.<br>
+      <b>Linhas, embaixo.</b> Teal é o <b>ROI do ciclo</b> — lucro sobre o capital que fica parado no
+      animal. Roxa pontilhada é a <b>margem líquida</b> — lucro sobre a receita.<br>
+      Trocar para o lote inteiro muda os reais e <u>não muda</u> as porcentagens. Margem grande num ciclo
+      longo pode render menos que margem magra que gira rápido — é essa comparação que o painel de baixo
+      existe para fazer.
+    </div>
+
+    <div class="bgi-ctrl">
+      <span class="bgi-lbl">Escala</span>
+      <select id="caiFinEscala" class="select" style="font-family:var(--font-display);font-size: var(--fs-sm)"
+              title="Por cabeça, ou multiplicado pelo número de cabeças da Calculadora do Boi."
+              onchange="try{updateCaiFinanceiro()}catch(e){}">
+        <option value="cab" selected>Por animal</option>
+        <option value="lote">Pelo lote inteiro</option>
+      </select>
+      <span style="font-size: var(--fs-nano);color:#6b7280">cabeças vêm da Calculadora do Boi · os demais parâmetros são os do card acima</span>
+    </div>
+
+    <div id="chartCaiFinanceiro" class="chart-container"></div>
+    <div id="chartCaiFinanceiroContext" class="chart-context"></div>
+
+    <details class="pc-det" id="caiFinDet">
+      <summary>Tabela por vencimento <small>· os mesmos números do gráfico, vencimento a vencimento</small></summary>
+      <div class="pc-det-corpo">
+        <div class="pc-wrap"><div id="caiFinTabela"></div></div>
+      </div>
+    </details>
+  </section>
+
+  <section class="card">
     <div class="card-title"><span class="card-title-text">BOI — Base: Físico contra Futuro</span><span class="m3-selo m3-selo-negociavel" title="Diferença entre dois preços que existem agora. Não é estimativa.">preço negociável hoje</span><button type="button" class="info-btn" aria-label="Ajuda: Base" data-tooltip="Base é o preço do boi físico menos o contrato BGI mais próximo do vencimento. Para quem trava venda, o preço que sai na conta final é o preço travado mais a base do dia da venda.">ⓘ</button></div>
       <div class="pill">A diferença que sobra na conta final de quem trava e entrega na praça.</div>
     <div class="explain">
@@ -20092,6 +20135,7 @@ function updatePreco() {
     var engine = window.__3M_calcEngine;
     if (typeof engine !== 'function'){
       renderPlot(chartId, [], {_no_title:true});
+      try { _caiFinPublica(null); } catch(e){}
       if (resEl) resEl.innerHTML =
         '<div class="read-box"><div class="rb-head">Calculadora indisponível</div>'
         + '<div class="rb-line">Abra a aba <b>Margem</b> uma vez para carregar a calculadora.</div></div>';
@@ -20271,6 +20315,7 @@ function updatePreco() {
 
     if (!st || !isFinite(st.cAI) || !(st.cAI > 0)){
       renderPlot(chartId, [], {_no_title:true});
+      try { _caiFinPublica(null); } catch(e){}
       if (resEl) resEl.innerHTML =
         '<div class="read-box"><div class="rb-head">Custo da @ incremental</div>'
         + '<div class="rb-line">Faltam parâmetros para fechar a conta. Preencha os campos abaixo '
@@ -20282,7 +20327,8 @@ function updatePreco() {
     var curva = shFuturesCurve('BGI', true);      // nominal, preço de tela
     var spot  = shSpotNominal('BOI GORDO', true);
     var chaves = curva ? Object.keys(curva).map(Number).sort(function(a,b){ return a-b; }) : [];
-    if (!chaves.length){ renderPlot(chartId, [], {_no_title:true}); return; }
+    if (!chaves.length){ renderPlot(chartId, [], {_no_title:true});
+      try { _caiFinPublica(null); } catch(e){} return; }
 
     var hoje  = new Date();
     var kHoje = hoje.getFullYear()*12 + hoje.getMonth();
@@ -20375,6 +20421,11 @@ function updatePreco() {
        isso ele teria de refazer a conta por fora, e duas contas para o mesmo
        número é exatamente o que um memorial existe para evitar. */
     var kVenc=[], cvVenc=[], stVenc=[];
+    /* Resultado em dinheiro, por vencimento. Alimenta o card financeiro
+       logo abaixo. Tudo sai do motor; nada e remontado aqui fora. */
+    var finInc=[], finLL=[], finRec=[], finROI=[], finROIa=[], finMLiq=[],
+        finArrV=[], finArrP=[], finArrE=[], finCap=[], finOrig=[], finFR=[],
+        finDesp=[], finTrib=[], finDias=[];
     var _pol = _polMilho(), _carr = _carregoMes();
     var _milhoSpot = shSpotNominal('MILHO - CEPEA', true);
     chaves.forEach(function(k){
@@ -20440,12 +20491,57 @@ function updatePreco() {
         } catch(e){}
       }
       kVenc.push(k); cvVenc.push(_cvMem); stVenc.push(_stMem);
+
+      /* ── Resultado em dinheiro deste vencimento ───────────────────────
+         Segunda passada no motor, agora com o PREÇO DO CONTRATO no lugar do
+         zero. É o que transforma margem por arroba em lucro por cabeça — e é
+         o motor quem faz, não uma conta paralela aqui. */
+      var _llc=null,_rec=null,_roi=null,_roiA=null,_mliq=null,_arrV=null,
+          _arrP=null,_incC=null,_cap=null,_orig=null,_fRv=null,_despv=null,
+          _tribv=null,_arrE=null,_diasv=null;
+      if (_cvMem && _stMem){
+        try {
+          var cvP = engine(_stMem, String(p));
+          if (cvP){
+            _llc   = isFinite(cvP.lL)   ? cvP.lL   : null;
+            _rec   = isFinite(cvP.rec)  ? cvP.rec  : null;
+            _roi   = isFinite(cvP.roi)  ? cvP.roi  : null;
+            _mliq  = isFinite(cvP.llP)  ? cvP.llP  : null;
+            _arrV  = isFinite(cvP.arC)  ? cvP.arC  : null;
+            _arrE  = isFinite(cvP.arE)  ? cvP.arE  : null;
+            _orig  = isFinite(cvP.orig) ? cvP.orig : null;
+            _fRv   = isFinite(cvP.fR)   ? cvP.fR   : null;
+            _despv = isFinite(cvP.desp) ? cvP.desp : null;
+            _tribv = isFinite(cvP.trib) ? cvP.trib : null;
+            _diasv = isFinite(cvP.d)    ? cvP.d    : null;
+            if (_arrV != null && _arrE != null) _arrP = _arrV - _arrE;
+            /* O capital empregado não volta do motor, mas o ROI volta — e o
+               ROI é lucro ÷ capital. Dividir de volta devolve exatamente o
+               capital que o motor usou, sem recriar a fórmula dele aqui. */
+            if (_llc != null && _roi != null && _roi !== 0) _cap = _llc / _roi;
+            /* Compor o retorno do ciclo por 365 dias só tem sentido enquanto
+               sobra capital: prejuízo maior que o capital não tem
+               equivalente anual, tem falência. */
+            if (_roi != null && _diasv != null && _diasv > 0 && (1 + _roi) > 0)
+              _roiA = Math.pow(1 + _roi, 365/_diasv) - 1;
+          }
+        } catch(e){}
+      }
+      if (_arrP == null && isFinite(arrobasGanhas)) _arrP = arrobasGanhas;
+      if (_arrP != null && isFinite(cA)) _incC = (p - cA) * _arrP;
+      finInc.push(_incC);   finLL.push(_llc);     finRec.push(_rec);
+      finROI.push(_roi);    finROIa.push(_roiA);  finMLiq.push(_mliq);
+      finArrV.push(_arrV);  finArrP.push(_arrP);  finArrE.push(_arrE);
+      finCap.push(_cap);    finOrig.push(_orig);  finFR.push(_fRv);
+      finDesp.push(_despv); finTrib.push(_tribv); finDias.push(_diasv);
+
       cAIvenc.push(cA);
       cVendVenc.push(cVend);
       margFix.push(p - cA);
       margVend.push(cVend != null ? (p - cVend) : null);
     });
-    if (!rot.length){ renderPlot(chartId, [], {_no_title:true}); return; }
+    if (!rot.length){ renderPlot(chartId, [], {_no_title:true});
+      try { _caiFinPublica(null); } catch(e){} return; }
 
     // Prazo em texto: o contrato do mês corrente tem m = 0, e "em 0 meses"
     // não diz nada — nele o que importa é ser o vencimento que está vencendo.
@@ -21264,7 +21360,388 @@ function updatePreco() {
         }
       };
     })();
+
+    /* O card financeiro logo abaixo lê daqui. A publicação fica no fim de
+       propósito: tudo o que ele mostra já passou pelo motor e já foi
+       desenhado acima, então as duas leituras não podem divergir. */
+    try {
+      _caiFinPublica({
+        rot:rot, pVenc:preco, prazoTxt:_prazoTxt,
+        margInc:margFix, margVend:margVend,
+        incCab:finInc, lLcab:finLL, recCab:finRec,
+        roi:finROI, roiA:finROIa, mLiq:finMLiq,
+        arrV:finArrV, arrP:finArrP, arrE:finArrE, capCab:finCap,
+        orig:finOrig, fR:finFR, desp:finDesp, trib:finTrib, dias:finDias,
+        nCab: Math.max(1, Math.floor(parseFloat(stIn.cabecas) || 1))
+      });
+    } catch(e){ console.warn('BGI × cAI — financeiro:', e); }
   }
+
+  /* ══════════════════════════════════════════════════════════════════
+     BOI — O QUE SOBRA EM DINHEIRO, POR VENCIMENTO
+     ------------------------------------------------------------------
+     O card de cima responde em R$/@. Útil para comparar com o contrato,
+     inútil para decidir: ninguém vende arroba avulsa, vende animal. R$ 27/@
+     não dizem nada até virarem R$ 27 × 20 @ = R$ 540 por cabeça — e, num
+     lote de 1.500, R$ 810 mil.
+
+     Este card faz essa tradução e acrescenta a pergunta que falta: sobre
+     QUANTO de dinheiro parado esses R$ 540 foram ganhos, e em quanto tempo.
+     Margem alta sobre capital alto pode render menos que margem magra que
+     gira rápido.
+
+     NADA é recalculado aqui. O laço do card de cima roda o motor uma segunda
+     vez com o preço do contrato no lugar de zero, e o que chega aqui são as
+     saídas do motor: lL, rec, roi, llP. Duas contas para o mesmo número é
+     exatamente o que este painel evita.
+     ══════════════════════════════════════════════════════════════════ */
+  var _CAIFIN = null;
+
+  function _caiFinPublica(d){
+    _CAIFIN = d;
+    try { updateCaiFinanceiro(); } catch(e){ console.warn('BGI × cAI — financeiro:', e); }
+  }
+
+  function _caiFinNum(v, casas){
+    if (v == null || !isFinite(v)) return '—';
+    return v.toLocaleString('pt-BR', { minimumFractionDigits:casas, maximumFractionDigits:casas });
+  }
+  function _caiFinRS(v, casas){
+    if (v == null || !isFinite(v)) return '—';
+    return 'R$ ' + _caiFinNum(v, casas == null ? 0 : casas);
+  }
+  function _caiFinPct(v, casas){
+    if (v == null || !isFinite(v)) return '—';
+    return _caiFinNum(v*100, casas == null ? 1 : casas) + '%';
+  }
+
+  function updateCaiFinanceiro(){
+    var chartId = 'chartCaiFinanceiro';
+    var el    = document.getElementById(chartId);
+    var ctxEl = document.getElementById('chartCaiFinanceiroContext');
+    var tabEl = document.getElementById('caiFinTabela');
+    if (!el) return;
+
+    var D = _CAIFIN;
+    if (!D || !D.rot || !D.rot.length){
+      renderPlot(chartId, [], {_no_title:true});
+      if (ctxEl){
+        ctxEl.className = 'read-box';
+        ctxEl.innerHTML = '<div class="rb-head">Resultado em dinheiro</div>'
+          + '<div class="rb-line">Depende da calculadora do card acima. Abra a aba <b>Margem</b> uma vez '
+          + 'ou preencha os parâmetros do cenário.</div>';
+      }
+      return;
+    }
+
+    /* Escala: a conta é sempre por cabeça; o lote é multiplicação. As
+       porcentagens não mudam com a escala, e é por isso que elas moram num
+       painel separado — multiplicar margem por 1.500 cabeças não a torna
+       melhor. */
+    var selEsc = document.getElementById('caiFinEscala');
+    var porLote = !!(selEsc && String(selEsc.value) === 'lote');
+    var nCab = (isFinite(D.nCab) && D.nCab > 0) ? Math.round(D.nCab) : 1;
+    if (nCab <= 1) porLote = false;
+    var mult = porLote ? nCab : 1;
+    var unid = porLote ? 'lote' : 'cab';
+    var rotU = porLote ? ('R$ no lote de ' + nCab.toLocaleString('pt-BR') + ' cabeças') : 'R$ por cabeça';
+
+    var rot = D.rot;
+    var inc = D.incCab.map(function(v){ return (v==null||!isFinite(v)) ? null : v*mult; });
+    var liq = D.lLcab.map(function(v){ return (v==null||!isFinite(v)) ? null : v*mult; });
+
+    /* ── Melhor vencimento por cada critério ─────────────────────────── */
+    function argMax(a){
+      var j = -1;
+      for (var i=0;i<a.length;i++) if (a[i]!=null && isFinite(a[i]) && (j<0 || a[i]>a[j])) j = i;
+      return j;
+    }
+    var iInc = argMax(inc), iLiq = argMax(liq), iRoi = argMax(D.roiA), iLiqPct = argMax(D.mLiq);
+
+    var _fmtRS = function(v){ return v==null ? '' : (v>=0?'+':'−') + _caiFinNum(Math.abs(v),0); };
+
+    var traces = [
+      /* Painel de cima — dinheiro. Mesmas cores do card irmão: âmbar é a
+         conta da engorda, roxo é a conta inteira. A correspondência entre
+         os dois cards precisa ser imediata, senão são dois assuntos. */
+      {x:rot, y:inc, type:'bar', name:'Margem da engorda (R$/'+unid+')',
+       marker:{color:inc.map(function(v){ return (v!=null&&v>=0) ? 'rgba(217,119,6,0.62)' : 'rgba(146,64,14,0.88)'; }),
+               line:{color:'#b45309', width:1}},
+       text:inc.map(_fmtRS), textposition:'outside', cliponaxis:false,
+       textfont:{size:9, color:'#92400e', family:'Montserrat,sans-serif'},
+       customdata:rot.map(function(_,i){
+         return [ D.arrP[i]==null?0:D.arrP[i], D.margInc[i]==null?0:D.margInc[i], D.prazoTxt[i] ]; }),
+       hovertemplate:'<b>%{x}</b><br>Margem da engorda: R$ %{y:,.0f} por '+unid
+                    +'<br>%{customdata[1]:.2f}/@ × %{customdata[0]:.2f} @ produzidas'
+                    +'<br>%{customdata[2]}<extra></extra>'},
+
+      {x:rot, y:liq, type:'bar', name:'Lucro líquido (R$/'+unid+')',
+       marker:{color:liq.map(function(v){ return (v!=null&&v>=0) ? 'rgba(139,92,246,0.62)' : 'rgba(91,33,182,0.9)'; }),
+               line:{color:'#7c3aed', width:1}},
+       text:liq.map(_fmtRS), textposition:'outside', cliponaxis:false,
+       textfont:{size:9, color:'#5b21b6', family:'Montserrat,sans-serif'},
+       customdata:rot.map(function(_,i){
+         return [ D.arrV[i]==null?0:D.arrV[i], D.margVend[i]==null?0:D.margVend[i], D.recCab[i]==null?0:D.recCab[i]*mult ]; }),
+       hovertemplate:'<b>%{x}</b><br>Lucro líquido: R$ %{y:,.0f} por '+unid
+                    +'<br>%{customdata[1]:.2f}/@ × %{customdata[0]:.2f} @ vendidas'
+                    +'<br>receita líquida: R$ %{customdata[2]:,.0f}<extra></extra>'},
+
+      /* Painel de baixo — rentabilidade. Eixo próprio, não um segundo eixo
+         grudado no de cima: % e R$ não compartilham escala, e sobrepor os
+         dois faria a linha cruzar as barras em pontos sem significado. */
+      {x:rot, y:D.roi, type:'scatter', mode:'lines+markers', yaxis:'y2',
+       name:'ROI do ciclo (lucro ÷ capital parado)',
+       line:{color:'#0d9488', width:2}, marker:{size:8, color:'#0d9488'},
+       connectgaps:false,
+       customdata:rot.map(function(_,i){
+         return [ D.roiA[i]==null?0:D.roiA[i], D.capCab[i]==null?0:D.capCab[i]*mult, D.dias[i]||0 ]; }),
+       hovertemplate:'<b>%{x}</b><br>ROI do ciclo: %{y:.2%}'
+                    +'<br>equivale a %{customdata[0]:.1%} ao ano (%{customdata[2]:.0f} dias)'
+                    +'<br>capital parado: R$ %{customdata[1]:,.0f}<extra></extra>'},
+
+      {x:rot, y:D.mLiq, type:'scatter', mode:'lines+markers', yaxis:'y2',
+       name:'Margem líquida (lucro ÷ receita)',
+       line:{color:'#7c3aed', width:2, dash:'dot'}, marker:{size:7, color:'#7c3aed', symbol:'diamond'},
+       connectgaps:false,
+       hovertemplate:'<b>%{x}</b><br>Margem líquida sobre a receita: %{y:.2%}<extra></extra>'}
+    ];
+
+    /* Rótulo direto só nos melhores pontos de cada linha: número em todo
+       ponto vira ruído e ninguém lê 24 porcentagens. */
+    var anotPct = [];
+    if (iRoi >= 0) anotPct.push({x:rot[iRoi], y:D.roi[iRoi], xref:'x', yref:'y2',
+      text:_caiFinPct(D.roi[iRoi],1), showarrow:false, yshift:14,
+      font:{size:9.5, color:'#0f766e', family:'Montserrat,sans-serif'}});
+    if (iLiqPct >= 0) anotPct.push({x:rot[iLiqPct], y:D.mLiq[iLiqPct], xref:'x', yref:'y2',
+      text:_caiFinPct(D.mLiq[iLiqPct],1), showarrow:false, yshift:-14,
+      font:{size:9.5, color:'#5b21b6', family:'Montserrat,sans-serif'}});
+
+    var _h = 620;
+    el.style.height = _h + 'px';
+
+    /* Escala do painel de dinheiro: pelos extremos REAIS, não pelo módulo do
+       maior. Uma barra de −38 ao lado de outra de +997 abria meio painel
+       vazio embaixo e achatava tudo que importa em cima. */
+    var todosRS = inc.concat(liq).filter(function(v){ return v!=null && isFinite(v); });
+    var posRS = todosRS.filter(function(v){ return v > 0; });
+    var negRS = todosRS.filter(function(v){ return v < 0; });
+    var maxPos = posRS.length ? Math.max.apply(null, posRS) : 0;
+    var minNeg = negRS.length ? Math.min.apply(null, negRS) : 0;
+    var ampRS  = Math.max(maxPos, Math.abs(minNeg), 1);
+
+    var todosPct = D.roi.concat(D.mLiq).filter(function(v){ return v!=null && isFinite(v); });
+    var minP = todosPct.length ? Math.min.apply(null, todosPct) : 0;
+    var maxP = todosPct.length ? Math.max.apply(null, todosPct) : 0.1;
+    var folgaP = Math.max(0.01, (maxP - minP) * 0.22);
+
+    renderPlot(chartId, traces, {
+      height:_h, margin:{l:76,r:26,t:74,b:56}, _no_title:true,
+      barmode:'group', bargap:0.34, bargroupgap:0.14,
+      xaxis:{title:{text:'Vencimento BGI', font:{size:10}}, tickfont:{size:11},
+             type:'category', gridcolor:'rgba(0,0,0,0)',
+             domain:[0,1], anchor:'y2', automargin:false},
+      yaxis:{title:{text:rotU, font:{size:10}}, tickfont:{size:10},
+             gridcolor:'#eef1f4', zeroline:true, zerolinecolor:'#374151', zerolinewidth:1.5,
+             range:[minNeg < 0 ? minNeg - ampRS*0.16 : -ampRS*0.05, maxPos + ampRS*0.17],
+             domain:[0.40,1], anchor:'x', tickformat:',.0f'},
+      yaxis2:{title:{text:'Rentabilidade', font:{size:10}}, tickfont:{size:10},
+              gridcolor:'#f3f4f6', zeroline:true, zerolinecolor:'#374151', zerolinewidth:1.5,
+              range:[minP - folgaP, maxP + folgaP],
+              tickformat:'.0%', domain:[0,0.28], anchor:'x', nticks:5},
+      shapes:[
+        {type:'rect', xref:'paper', yref:'paper', x0:0, x1:1, y0:0.40, y1:1,
+         line:{width:0}, fillcolor:'rgba(124,58,237,0.03)', layer:'below'}
+      ].concat(iLiq>=0 ? [
+        {type:'rect', xref:'x', yref:'paper', x0:iLiq-0.46, x1:iLiq+0.46,
+         y0:0, y1:1, line:{width:0}, fillcolor:'rgba(124,58,237,0.07)', layer:'below'}
+      ] : []).concat(iRoi>=0 && iRoi!==iLiq ? [
+        {type:'rect', xref:'x', yref:'paper', x0:iRoi-0.46, x1:iRoi+0.46,
+         y0:0, y1:1, line:{width:0}, fillcolor:'rgba(13,148,136,0.07)', layer:'below'}
+      ] : []),
+      annotations:[
+        {text:'<b>Quanto sobra em dinheiro</b>  <span style="color:#6b7280">('+rotU+')</span>',
+         xref:'paper', yref:'paper', x:0, y:1.005, xanchor:'left', yanchor:'bottom',
+         showarrow:false, font:{size:10.5, color:'#5b21b6'}},
+        {text:'<b>Quanto isso rende</b>  <span style="color:#6b7280">(a escala não muda estas duas linhas)</span>',
+         xref:'paper', yref:'paper', x:0, y:0.295, xanchor:'left', yanchor:'bottom',
+         showarrow:false, font:{size:10.5, color:'#6b7280'}},
+        {text:(iLiq>=0 ? 'mais dinheiro: <b style="color:#7c3aed">'+rot[iLiq]+'</b>' : '')
+             + (iRoi>=0 ? '   ·   mais rentável: <b style="color:#0f766e">'+rot[iRoi]+'</b>' : ''),
+         xref:'paper', yref:'paper', x:1, y:0.295, xanchor:'right', yanchor:'bottom',
+         showarrow:false, font:{size:10, color:'#374151'}}
+      ].concat(anotPct),
+      legend:{orientation:'h', y:1.085, x:0.5, xanchor:'center', yanchor:'bottom',
+              font:{size:9.5, color:'#374151'}, tracegroupgap:2}
+    });
+
+    /* ── Ponte entre as duas barras ──────────────────────────────────────
+       A diferença entre a margem da engorda e o lucro líquido NÃO é só "a
+       compra do animal", como seria tentador escrever. A álgebra do motor
+       dá três parcelas:
+
+         lucro líquido = margem da engorda
+                       + (preço do contrato × @ de entrada − reposição − juro dela)
+                       − operacional
+                       − tributos
+
+       A primeira parcela é o resultado da COMPRA: as arrobas que entraram
+       custaram o preço do magro e saem valendo o preço do contrato. Pode ser
+       positiva. Chamar tudo de "custo do animal" esconderia esse sinal. */
+    function ponte(i){
+      if (i < 0) return null;
+      var m = mult;
+      var incI = inc[i], liqI = liq[i];
+      if (incI == null || liqI == null) return null;
+      var repo = (D.pVenc[i]!=null && D.arrE[i]!=null && D.orig[i]!=null)
+               ? (D.pVenc[i]*D.arrE[i] - D.orig[i] - (D.fR[i]||0)) * m : null;
+      var oper = D.desp[i]!=null ? -D.desp[i]*m : null;
+      var trib = D.trib[i]!=null ? -D.trib[i]*m : null;
+      var soma = incI + (repo||0) + (oper||0) + (trib||0);
+      var resid = liqI - soma;
+      return { inc:incI, repo:repo, oper:oper, trib:trib, resid:resid, liq:liqI };
+    }
+
+    /* ── Tabela ──────────────────────────────────────────────────────────
+       Um gráfico com 24 colunas responde "qual é o melhor"; não responde
+       "quanto exatamente em J27". A tabela responde, e é também a versão
+       legível para quem não enxerga as cores. */
+    if (tabEl){
+      var t = '<table class="pc-tab"><thead><tr>'
+            + '<th>Venc.</th><th>Contrato</th><th>Engorda (R$/'+unid+')</th>'
+            + '<th>Líquido (R$/'+unid+')</th><th>ROI ciclo</th><th>ROI ano</th>'
+            + '<th>Margem s/ receita</th></tr></thead><tbody>';
+      for (var i=0;i<rot.length;i++){
+        var marca = (i===iLiq) ? ' style="background:rgba(124,58,237,0.07);font-weight:700"'
+                  : ((i===iRoi) ? ' style="background:rgba(13,148,136,0.07)"' : '');
+        t += '<tr'+marca+'><td>'+rot[i]+'</td>'
+           + '<td>'+_caiFinRS(D.pVenc[i],2)+'/@</td>'
+           + '<td>'+_caiFinRS(inc[i],0)+'</td>'
+           + '<td>'+_caiFinRS(liq[i],0)+'</td>'
+           + '<td>'+_caiFinPct(D.roi[i],1)+'</td>'
+           + '<td>'+_caiFinPct(D.roiA[i],1)+'</td>'
+           + '<td>'+_caiFinPct(D.mLiq[i],1)+'</td></tr>';
+      }
+      t += '</tbody></table>';
+      tabEl.innerHTML = t;
+    }
+
+    /* ── Leitura ─────────────────────────────────────────────────────── */
+    if (ctxEl){
+      var h = '<div class="rb-head">Leitura</div>';
+
+      if (iLiq >= 0){
+        h += '<div class="rb-line"><b>O número que entra no caixa.</b> Vendendo em <b>' + rot[iLiq]
+           + '</b> a ' + _caiFinRS(D.pVenc[iLiq],2) + '/@, cada animal fecha em <span class="rb-num">'
+           + _caiFinRS(D.lLcab[iLiq],0) + ' por cabeça</span>'
+           + (nCab > 1 ? ' — <span class="rb-num">' + _caiFinRS(D.lLcab[iLiq]*nCab,0)
+                         + '</span> no lote de ' + nCab.toLocaleString('pt-BR') + ' cabeças' : '')
+           + '. São ' + _caiFinNum(D.margVend[iLiq],2) + ' R$/@ sobre '
+           + _caiFinNum(D.arrV[iLiq],2) + ' @ vendidas.</div>';
+      }
+
+      if (iInc >= 0){
+        h += '<div class="rb-line"><b>A conta de quem já tem o boi.</b> A margem de engorda em <b>'
+           + rot[iInc] + '</b> é ' + _caiFinNum(D.margInc[iInc],2) + ' R$/@ × '
+           + _caiFinNum(D.arrP[iInc],2) + ' @ produzidas = <span class="rb-num">'
+           + _caiFinRS(D.incCab[iInc],0) + ' por cabeça</span>. É a tradução direta da barra âmbar '
+           + 'do card acima: a arroba sozinha não decide nada, o animal inteiro decide.</div>';
+      }
+
+      var pb = ponte(iLiq);
+      if (pb){
+        h += '<div class="rb-line" style="border-left:3px solid #7c3aed;padding-left:9px;margin-top:8px">'
+           + '<b>Por que as duas barras não batem, em ' + rot[iLiq] + '.</b><br>'
+           + 'Margem da engorda: <b>' + _caiFinRS(pb.inc,0) + '</b><br>'
+           + 'Resultado da compra do magro: <b>' + (pb.repo!=null ? ((pb.repo>=0?'+ ':'− ') + _caiFinRS(Math.abs(pb.repo),0)) : '—') + '</b>'
+           + ' <span style="color:#6b7280">— as ' + _caiFinNum(D.arrE[iLiq],2) + ' @ de entrada custaram '
+           + _caiFinRS(D.orig[iLiq]!=null?D.orig[iLiq]*mult:null,0) + ' (mais ' + _caiFinRS(D.fR[iLiq]!=null?D.fR[iLiq]*mult:null,0)
+           + ' de juro do capital) e saem valendo ' + _caiFinRS((D.pVenc[iLiq]*D.arrE[iLiq])*mult,0)
+           + ' ao preço do contrato</span><br>'
+           + 'Operacional: <b>' + (pb.oper!=null ? ('− ' + _caiFinRS(Math.abs(pb.oper),0)) : '—') + '</b><br>'
+           + 'Tributos: <b>' + (pb.trib!=null ? ('− ' + _caiFinRS(Math.abs(pb.trib),0)) : '—') + '</b>'
+           + (Math.abs(pb.resid) > 1
+              ? '<br>Perdas e deduções: <b>' + (pb.resid>=0?'+ ':'− ') + _caiFinRS(Math.abs(pb.resid),0) + '</b>'
+              : '')
+           + '<br>= Lucro líquido: <b>' + _caiFinRS(pb.liq,0) + '</b>'
+           + '<div style="margin-top:5px;color:#6b7280">O pedaço da compra pode ser positivo: se o magro '
+           + 'foi comprado abaixo do que o contrato paga pela arroba, as arrobas de entrada entram '
+           + 'ganhando. Chamar essa linha de "custo do animal" esconderia esse sinal.</div></div>';
+      }
+
+      if (iRoi >= 0){
+        var mesmoVenc = (iRoi === iLiq);
+        h += '<div class="rb-line"><b>Dinheiro não é rentabilidade.</b> O vencimento que paga mais '
+           + 'em reais é <b>' + (iLiq>=0?rot[iLiq]:'—') + '</b>; o que melhor remunera o capital é <b>'
+           + rot[iRoi] + '</b>, com ' + _caiFinPct(D.roi[iRoi],1) + ' no ciclo de '
+           + _caiFinNum(D.dias[iRoi],0) + ' dias — <span class="rb-num">' + _caiFinPct(D.roiA[iRoi],1)
+           + ' ao ano</span> — sobre ' + _caiFinRS(D.capCab[iRoi],0) + ' parados por cabeça.'
+           + (mesmoVenc
+              ? ' Aqui os dois coincidem, o que simplifica a decisão.'
+              : ' São vencimentos diferentes: ' + (iLiq>=0?rot[iLiq]:'—') + ' entrega mais dinheiro, '
+                + rot[iRoi] + ' devolve o dinheiro mais rápido. Quem tem capital sobrando persegue o '
+                + 'primeiro; quem tem giro curto, o segundo.')
+           + '</div>';
+      }
+
+      /* Quando as duas porcentagens quase coincidem, isso é um fato econômico
+         do confinamento e não um defeito do gráfico — mas quem olha duas
+         linhas sobrepostas sem explicação conclui que uma delas sobra. */
+      var difMed = (function(){
+        var soma = 0, n = 0;
+        for (var q=0;q<D.roi.length;q++){
+          if (D.roi[q]!=null && isFinite(D.roi[q]) && D.mLiq[q]!=null && isFinite(D.mLiq[q])){
+            soma += Math.abs(D.roi[q] - D.mLiq[q]); n++;
+          }
+        }
+        return n ? soma/n : null;
+      })();
+      if (difMed != null && difMed < 0.02 && iLiq >= 0 && D.capCab[iLiq] != null && D.recCab[iLiq] != null){
+        h += '<div class="rb-line"><b>Por que as duas linhas andam quase coladas.</b> No confinamento o '
+           + 'capital empregado é quase do tamanho da receita — ' + _caiFinRS(D.capCab[iLiq],0)
+           + ' parados contra ' + _caiFinRS(D.recCab[iLiq],0) + ' de receita por cabeça — e dividir o '
+           + 'mesmo lucro por um ou por outro dá quase o mesmo número. Elas se separam quando o ciclo '
+           + 'alonga, quando a reposição pesa mais na conta ou quando há dedução sobre a venda.</div>';
+      }
+
+      h += '<div class="rb-note"><b>O que cada percentual mede.</b> '
+         + '<b>ROI do ciclo</b> é o lucro líquido dividido pelo capital empregado — reposição, custeio, '
+         + 'operacional e tributos, sem os juros, que já estão descontados no lucro. É quanto rende o '
+         + 'dinheiro parado no animal, do embarque ao abate. O <b>equivalente ao ano</b> compõe esse '
+         + 'retorno por 365 dias e só serve para comparar ciclos de durações diferentes — não é o '
+         + 'retorno de quem fizer um lote só. '
+         + '<b>Margem líquida</b> é o lucro sobre a receita, o número que conversa com a DRE. '
+         + 'Um ciclo pode ter margem magra e ROI alto se girar rápido, e o contrário também. '
+         + '<b>Premissas:</b> as mesmas do card acima — GMD e custo diário constantes, preços nominais, '
+         + 'a reposição referenciada a 4 meses antes de cada venda. É leitura de mercado, não recomendação.</div>';
+
+      ctxEl.className = 'read-box';
+      ctxEl.innerHTML = h;
+    }
+
+    /* Publica para quem mais quiser ler, no mesmo endereço dos demais sinais. */
+    try {
+      window.__3M_SINAIS = window.__3M_SINAIS || {};
+      window.__3M_SINAIS.caiFin = {
+        escala: porLote ? 'lote' : 'cab', cabecas: nCab,
+        melhorDinheiro: iLiq>=0 ? rot[iLiq] : null,
+        lucroCab: iLiq>=0 ? D.lLcab[iLiq] : null,
+        melhorROI: iRoi>=0 ? rot[iRoi] : null,
+        roiCiclo: iRoi>=0 ? D.roi[iRoi] : null,
+        roiAno: iRoi>=0 ? D.roiA[iRoi] : null,
+        porVenc: (function(){
+          var o = {};
+          rot.forEach(function(r,i){
+            o[r] = { lucroCab:D.lLcab[i], margemEngordaCab:D.incCab[i], roi:D.roi[i],
+                     roiAno:D.roiA[i], margemLiquida:D.mLiq[i], capital:D.capCab[i],
+                     receita:D.recCab[i], arrobasVendidas:D.arrV[i], arrobasProduzidas:D.arrP[i] };
+          });
+          return o;
+        })()
+      };
+    } catch(e){}
+  }
+  try { window.updateCaiFinanceiro = updateCaiFinanceiro; } catch(e){}
+
   try { window.updateBGIvsCAI = updateBGIvsCAI; } catch(e){}
 
   /* =======================================================================
@@ -41851,7 +42328,7 @@ function updateRelacao() {
     chartSHMilhoEnso:'m3_2_3',
     chartAbatePreco:'m3_2_6', chartCicloTempo:'m3_2_6',
     chartCorrelacaoFisico:'m3_2_9',
-    chartBGIvsCAI:'m3_3_5b', chartBase:'m3_3_5b',
+    chartBGIvsCAI:'m3_3_5b', chartCaiFinanceiro:'m3_3_5b', chartBase:'m3_3_5b',
     chartJanelaHedge:'m3_3_5d'
   };
   /* Casamento por título, para as seções sem gráfico. Ordem importa: a
@@ -42165,6 +42642,7 @@ function updateRelacao() {
         ['A pressão da reposição está alta?','Spread bruto e pressão, por praça.','m3_1_4','chartRegGordoMagro'],
         ['A indústria está apertada?','Escala de abate.','m3_1_3','chartEscalaHist'],
         ['O futuro sustenta a engorda?','Curva BGI e custo da @ incremental.','m3_3_5b','chartBGIvsCAI'],
+        ['Quanto sobra por animal?','Margem em reais por cabeça e retorno sobre o capital.','m3_3_5b','chartCaiFinanceiro'],
         ['A conta fecha?','Repor agora compensa?','m3_3_2','chartRepoCadeia']
       ] },
     m3_3_3: { titulo:'Compro bezerro?',
@@ -42932,7 +43410,7 @@ function updateRelacao() {
       'chartZScore','chartGauss','chartVolDiaria','chartBollinger','chartMACD','chartIFR',
       'chartRatioBGICCM','chartBaseAtivo','chartBtAtivo','chartAgio'] },
     curva: { rot:'CURVA INTEIRA', dica:'Lê todos os vencimentos de uma vez; trocar de contrato não muda este gráfico.', ids:[
-      'chartBoiVsBGIAll','chartBGICarrego','chartCurva','chartBGIvsCAI','chartBase',
+      'chartBoiVsBGIAll','chartBGICarrego','chartCurva','chartBGIvsCAI','chartCaiFinanceiro','chartBase',
       'chartBacktest','chartBtCond','chartBtCondTraj'] },
     par: { rot:'PAR FIXO', dica:'Cruza duas séries físicas nomeadas no título; não depende do ativo selecionado.', ids:[
       'chartBoiMagroTroca','chartBoiMagroAgio','chartBezBoiTroca','chartBezAgioHist',
