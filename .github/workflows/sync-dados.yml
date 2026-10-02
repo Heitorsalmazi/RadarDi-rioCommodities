@@ -1,9 +1,55 @@
 name: Sync Excel Data
 
+# CADÊNCIA — leia antes de mexer no cron
+# ────────────────────────────────────────────────────────────────────────
+# O cron anterior era "*/20 * * * *": pedia 72 execuções por dia e o GitHub
+# entregava 5,8 — 8%. Medido sobre 30 dias (02/09 a 02/10/2026). A
+# documentação deles é explícita: "Scheduled events can be delayed during
+# periods of high loads" e "if the load is sufficiently high enough, some
+# queued jobs may be dropped".
+#
+# Pior: TODO workflow agendado deste repositório atrasava ~5h. O da ANTT
+# pede 07:40 UTC e saía entre 12:26 e 15:56; o de pedágios pede 06:25 e
+# saía entre 11:33 e 14:09. Os dois pedem horários separados por uma hora
+# e saem na mesma faixa — o horário pedido quase não importa, o que manda
+# é quando a fila do repositório esvazia. A suspeita é que o */20, único
+# cron de alta frequência daqui, mantinha essa fila saturada e os outros
+# quatro pagavam a conta. Se os atrasos deles encolherem depois desta
+# mudança, a suspeita estava certa.
+#
+# Daí os dois gatilhos de naturezas diferentes:
+#   schedule     — poucos pedidos, minuto quebrado. Continua sendo um
+#                  PEDIDO: o GitHub atende quando tem folga.
+#   workflow_run — carona no término dos outros workflows. NÃO passa pelo
+#                  agendador, então é o único disparo pontual possível
+#                  aqui sem precisar de token.
+#
+# A planilha muda 1 a 2 vezes por dia, quase sempre entre 10h e 12h UTC
+# (07h-09h BRT), e nunca no fim de semana. A carona cai logo depois disso,
+# que é justamente quando há algo novo para buscar.
+
 on:
   schedule:
-    - cron: '*/20 * * * *'  # a cada 2 horas
+    - cron: '11 9 * * *'
+    - cron: '11 13 * * *'
+    - cron: '11 17 * * *'
+    - cron: '11 21 * * *'
+
+  workflow_run:
+    workflows:
+      - "Atualiza base de pedágios"
+      - "Atualiza coeficientes da ANTT"
+      - "Atualiza base de opções"
+    types: [completed]
+
   workflow_dispatch:         # permite rodar manualmente pelo GitHub quando quiser
+
+# Duas execuções ao mesmo tempo disputariam o mesmo dados.xlsx. Com a
+# carona isso deixou de ser hipótese: o sync passa a disparar logo depois
+# dos outros workflows, que podem cair quase juntos.
+concurrency:
+  group: sync-dados
+  cancel-in-progress: false
 
 jobs:
   sync:
@@ -14,6 +60,11 @@ jobs:
     steps:
       - name: Checkout repositório
         uses: actions/checkout@v4
+        with:
+          # Na carona (workflow_run) o checkout padrão pega o commit em que
+          # o workflow de cima rodou, que já pode estar atrás do main — e aí
+          # o push nasce rejeitado. Fixar em main resolve na origem.
+          ref: main
 
       - name: Baixar Excel do Google Sheets
         run: |
@@ -61,15 +112,35 @@ jobs:
           print(f"XLSX salvo com sucesso: {size_kb:.1f} KB")
           PYEOF
 
-      - name: Commit e push se houver mudança
+      - name: Commit e push com rebase
         run: |
+          set -e
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # SÓ este arquivo. Um "git add -A" arrastaria o que os outros
+          # workflows baixaram no mesmo minuto.
           git add dados.xlsx
+
           if git diff --staged --quiet; then
             echo "Sem mudanças. Nenhum commit necessário."
-          else
-            git commit -m "auto: atualiza dados $(date +'%d/%m/%Y %H:%M') UTC"
-            git push
-            echo "Dados atualizados com sucesso."
+            exit 0
           fi
+
+          git commit -m "auto: atualiza dados $(date +'%d/%m/%Y %H:%M') UTC"
+
+          # Os outros quatro workflows dão push nesta mesma branch, e a
+          # carona (workflow_run) faz o sync disparar logo depois deles.
+          # Sem rebase, o push é rejeitado por non-fast-forward e o dado
+          # do dia simplesmente não sobe. Mesmo padrão dos outros quatro.
+          for tentativa in 1 2 3; do
+            if git push; then
+              echo "Push concluído na tentativa $tentativa."
+              exit 0
+            fi
+            echo "Push rejeitado. Rebase e nova tentativa ($tentativa/3)."
+            git pull --rebase --autostash origin main
+            sleep 5
+          done
+          echo "Não consegui publicar depois de 3 tentativas."
+          exit 1
